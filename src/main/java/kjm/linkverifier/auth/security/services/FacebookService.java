@@ -47,33 +47,16 @@ public class FacebookService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public ResponseEntity<?> loginUser(String fbAccessToken) {
+    public User getUserFromFacebook(String fbAccessToken) {
         var facebookUser = facebookClient.getUser(fbAccessToken);
-        User user = new User();
+        User user;
         if(!userRepository.existsById(facebookUser.getId())) {
             user = registerFacebookUser(convertUserToFacebookUser(facebookUser));
         } else {
             user = userRepository.findById(facebookUser.getId()).get();
         }
 
-        UserDetailsImpl userDetails = UserDetailsImpl.build(user);
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        List<String> rolesList = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        return ResponseEntity.ok(new TokenResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userRepository.findByEmail(userDetails.getEmail()).get().getProfilePicture(),
-                userDetails.getEmail(),
-                rolesList));
+        return user;
     }
 
     public User convertUserToFacebookUser(FacebookUser facebookUser) {

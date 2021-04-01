@@ -80,7 +80,26 @@ public class AuthController {
     @PostMapping("/facebook/signin")
     public  ResponseEntity<?> facebookAuth(@Valid @RequestBody FacebookLoginRequest facebookLoginRequest) {
         log.info("facebook login {}", facebookLoginRequest);
-        return facebookService.loginUser(facebookLoginRequest.getAccessToken());
+        User user = facebookService.getUserFromFacebook(facebookLoginRequest.getAccessToken());
+
+        UserDetailsImpl userDetails = UserDetailsImpl.build(user);
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        List<String> rolesList = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        String jwt = jwtUtils.generateJwtToken(authentication);
+        return ResponseEntity.ok(new TokenResponse(jwt,
+                userDetails.getId(),
+                userDetails.getUsername(),
+                userRepository.findByEmail(userDetails.getEmail()).get().getProfilePicture(),
+                userDetails.getEmail(),
+                rolesList));
     }
 
     @PostMapping("/signup")
