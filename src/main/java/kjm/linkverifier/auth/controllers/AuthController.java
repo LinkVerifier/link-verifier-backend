@@ -1,16 +1,20 @@
 package kjm.linkverifier.auth.controllers;
 
+import kjm.linkverifier.auth.client.FacebookClient;
 import kjm.linkverifier.auth.models.Role;
 import kjm.linkverifier.auth.models.RoleEnum;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.RoleRepository;
 import kjm.linkverifier.auth.repository.UserRepository;
+import kjm.linkverifier.auth.request.FacebookLoginRequest;
 import kjm.linkverifier.auth.security.jwtToken.JwtUtils;
+import kjm.linkverifier.auth.security.services.FacebookService;
 import kjm.linkverifier.auth.security.services.UserDetailsImpl;
 import kjm.linkverifier.auth.response.TokenResponse;
 import kjm.linkverifier.auth.request.LoginRequest;
 import kjm.linkverifier.auth.response.InformationResponse;
 import kjm.linkverifier.auth.request.RegisterRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,11 +26,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@Slf4j
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -35,15 +41,17 @@ public class AuthController {
     private UserRepository userRepository;
     private JwtUtils jwtUtils;
     private AuthenticationManager authenticationManager;
+    private FacebookService facebookService;
 
     public AuthController(PasswordEncoder encoder, RoleRepository roleRepository,
                           UserRepository userRepository, JwtUtils jwtUtils,
-                          AuthenticationManager authenticationManager) {
+                          AuthenticationManager authenticationManager, FacebookService facebookService) {
         this.encoder = encoder;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
+        this.facebookService = facebookService;
     }
 
     @PostMapping("/signin")
@@ -69,13 +77,15 @@ public class AuthController {
                 rolesList));
     }
 
+    @PostMapping("/facebook/signin")
+    public  ResponseEntity<?> facebookAuth(@Valid @RequestBody FacebookLoginRequest facebookLoginRequest) {
+        log.info("facebook login {}", facebookLoginRequest);
+        return facebookService.loginUser(facebookLoginRequest.getAccessToken());
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody RegisterRequest registerRequest) {
-        if (userRepository.existsByUsername(registerRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new InformationResponse("Error: Username is already taken!"));
-        } else if(userRepository.existsByEmail(registerRequest.getEmail())) {
+    if(userRepository.existsByEmail(registerRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
                     .body(new InformationResponse("Error: Email is already in use!"));

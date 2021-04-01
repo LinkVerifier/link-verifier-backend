@@ -1,5 +1,6 @@
 package kjm.linkverifier.auth.models;
 
+import kjm.linkverifier.link.model.Comment;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.Id;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Document(collection = "users")
@@ -52,4 +54,10 @@ public class User {
 
     @DBRef
     private Set<Role> roles;
+
+    @DBRef
+    private List<Comment> comments;
+
+    private boolean confirmed;
+
 }
