@@ -13,17 +13,22 @@ import kjm.linkverifier.auth.response.TokenResponse;
 import kjm.linkverifier.auth.request.LoginRequest;
 import kjm.linkverifier.auth.response.InformationResponse;
 import kjm.linkverifier.auth.request.RegisterRequest;
+import kjm.linkverifier.auth.security.services.UserDetailsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -81,19 +86,23 @@ public class AuthController {
     @PostMapping("/facebook/signin")
     public  ResponseEntity<?> facebookAuth(@Valid @RequestBody FacebookLoginRequest facebookLoginRequest) {
         User user = facebookService.getUserFromFacebook(facebookLoginRequest.getAccessToken());
-        UserDetailsImpl userDetails = UserDetailsImpl.build(user);
+        UserDetailsImpl userDetails2 = UserDetailsImpl.build(user);
 
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user, null, AuthorityUtils.createAuthorityList("ROLE_FACEBOOK_USER")));
-        log.info("are u ok?");
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails2, null,
+                AuthorityUtils.createAuthorityList("ROLE_USER"));
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        log.info(((UserDetailsImpl)principal).getEmail() + " <--- email z aktualnie zalogowanego");
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<String> rolesList = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
         String jwt = jwtUtils.generateJwtToken(authentication);
+        log.info("Authenticate: " +((UserDetails)principal).getUsername());
+        log.info("succesfuly logged in : {}", ((UserDetailsImpl)principal).getEmail());
         return ResponseEntity.ok(new TokenResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),

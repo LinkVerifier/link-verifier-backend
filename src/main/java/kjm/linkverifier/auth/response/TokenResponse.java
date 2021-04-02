@@ -1,12 +1,14 @@
 package kjm.linkverifier.auth.response;
 
-import lombok.Data;
-import lombok.NonNull;
+import lombok.*;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TokenResponse {
+    @NonNull
     private String id;
     @NonNull
     private String username;
@@ -18,6 +20,7 @@ public class TokenResponse {
     private String profilePhoto;
     @NonNull
     private List<String> roles;
+
     private String type = "Bearer";
 
     public TokenResponse(String token, String id, String username, String profilePhoto,
