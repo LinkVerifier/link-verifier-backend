@@ -69,7 +69,8 @@ public class AuthController {
         String jwt = jwtUtils.generateJwtToken(authentication);
         log.info("succesfuly logged in : {}", ((UserDetailsImpl)principal).getEmail());
 
-        return ResponseEntity.ok(new TokenResponse(jwt,
+        return ResponseEntity.ok(new TokenResponse(
+                jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userRepository.findByEmail(userDetails.getEmail()).get().getProfilePicture(),
@@ -82,8 +83,7 @@ public class AuthController {
         User user = facebookService.getUserFromFacebook(facebookLoginRequest.getAccessToken());
         UserDetailsImpl userDetails = UserDetailsImpl.build(user);
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user, null, AuthorityUtils.createAuthorityList("ROLE_FACEBOOK_USER")));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user, null, AuthorityUtils.createAuthorityList("ROLE_FACEBOOK_USER")));
         log.info("are u ok?");
         SecurityContextHolder.getContext().setAuthentication(authentication);
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
