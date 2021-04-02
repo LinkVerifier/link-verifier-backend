@@ -21,6 +21,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -45,7 +46,7 @@ public class FacebookService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private PasswordEncoder passwordEncoder;
 
     public User getUserFromFacebook(String fbAccessToken) {
         var facebookUser = facebookClient.getUser(fbAccessToken);
@@ -64,7 +65,7 @@ public class FacebookService {
                 .id(facebookUser.getId())
                 .email(facebookUser.getEmail())
                 .username(facebookUser.getFirstName() + " " + facebookUser.getLastName())
-                .password(generatePassayPassword(8))
+                .password(passwordEncoder.encode(generatePassayPassword(8)))
                 .profilePicture(facebookUser.getPicture().getData().getUrl())
                 .build();
     }

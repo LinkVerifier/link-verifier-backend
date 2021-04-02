@@ -1,6 +1,7 @@
 package kjm.linkverifier.auth.security.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import kjm.linkverifier.auth.models.Role;
 import kjm.linkverifier.auth.models.User;
 import lombok.Data;
 import lombok.NonNull;
@@ -10,10 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Data
