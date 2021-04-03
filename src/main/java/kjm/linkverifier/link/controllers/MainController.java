@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -27,17 +28,21 @@ public class MainController {
     }
 
     @PostMapping
-    public ResponseEntity<?> searchLink(@Valid @RequestBody LinkRequest linkRequest) {
+    public Link searchLink(@Valid @RequestBody LinkRequest linkRequest) {
         if (!linkService.existsByLink(linkRequest.getLink())) {
-            linkService.save(new Link(linkRequest.getLink(), 1, 0));
+            linkService.save(new Link(linkRequest.getLink(), 0, 0, new Date(linkRequest.getDeliveryDate())));
         }
 
         Link currentLink = linkService.findByName(linkRequest.getLink())
                 .orElseThrow(() -> new RuntimeException("Error: Link is not found."));
+        currentLink.setLastVisitDate(new Date(linkRequest.getDeliveryDate()));
+        currentLink.setViews(currentLink.getViews()+1);
 
-        return ResponseEntity.ok("Wysłany link: "
-                + linkService.existsByLink(linkRequest.getLink())
-                + " : " + linkRequest.getLink());
+        linkService.save(currentLink);
+
+        return currentLink;
+
+
     }
 
 

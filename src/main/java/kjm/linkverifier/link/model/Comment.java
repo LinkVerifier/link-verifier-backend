@@ -12,5 +12,5 @@ public class Comment {
 
     String comment;
 
-
+    Opinion opinion;
 }
