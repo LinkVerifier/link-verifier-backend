@@ -1,5 +1,6 @@
 package kjm.linkverifier.link.requests;
 
+import kjm.linkverifier.link.model.Opinion;
 import lombok.Data;
 
 @Data
