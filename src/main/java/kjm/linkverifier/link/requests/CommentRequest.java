@@ -1,9 +1,10 @@
 package kjm.linkverifier.link.requests;
 
-import kjm.linkverifier.link.model.Opinion;
-import lombok.Data;
+import lombok.*;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentRequest {
 
     private String comment;

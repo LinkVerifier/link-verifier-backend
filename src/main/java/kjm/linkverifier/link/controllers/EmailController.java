@@ -20,5 +20,5 @@ public class EmailController {
     public boolean checkIfEmailExists(EmailRequest emailRequest) {
         return userRepository.existsByEmail(emailRequest.getEmail());
     }
-    
+
 }

@@ -6,21 +6,22 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
-@Document(collection = "comments")
 @Data
 @RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(collection = "comments")
 public class Comment {
+
     @Id
-    String id;
+    private String id;
 
     @NonNull
-    String comment;
+    private String comment;
 
     @NonNull
-    Date creationDate;
+    private Date creationDate;
 
     @NonNull
-    Opinion opinion;
+    private Opinion opinion;
 }
