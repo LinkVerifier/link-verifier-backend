@@ -26,14 +26,14 @@ public class LinkController {
         String opinion = commentRequest.getOpinion();
         if(opinion.equals("")){}
 
-        ///tu
+/*        /tu
         Comment comment = new Comment(commentRequest.getComment(), date, new Opinion("enumTU"));
         List<Comment> commentList = link.getComments();
         commentList.add(comment);
         link.setComments(commentList);
         List<Opinion> opinions = link.getOpinions();
         opinions.add(comment.getOpinion());
-        link.setOpinions(opinions);
+        link.setOpinions(opinions);*/
         return linkRepository.save(link);
     }
 
