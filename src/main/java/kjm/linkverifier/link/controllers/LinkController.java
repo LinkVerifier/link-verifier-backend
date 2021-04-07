@@ -1,7 +1,5 @@
 package kjm.linkverifier.link.controllers;
 
-import kjm.linkverifier.auth.models.Role;
-import kjm.linkverifier.auth.models.RoleEnum;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.model.Opinion;
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

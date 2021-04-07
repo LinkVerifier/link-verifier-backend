@@ -28,7 +28,7 @@ public class MainController {
     }
 
     @PostMapping
-    public Link searchLink(@Valid @RequestBody LinkRequest linkRequest) {
+    public String searchLink(@Valid @RequestBody LinkRequest linkRequest) {
         if (!linkService.existsByLink(linkRequest.getLink())) {
             linkService.save(new Link(linkRequest.getLink(), 0, 0, new Date(linkRequest.getDeliveryDate())));
         }
@@ -40,9 +40,7 @@ public class MainController {
 
         linkService.save(currentLink);
 
-        return currentLink;
-
-
+        return currentLink.getId();
     }
 
 
