@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface LinkRepository extends MongoRepository<Link, String> {
-    boolean existsByLink(String link);
-    Optional<Link> findByLink(String link);
+    boolean existsByLinkName(String link);
+    Optional<Link> findByLinkName(String link);
 
 }

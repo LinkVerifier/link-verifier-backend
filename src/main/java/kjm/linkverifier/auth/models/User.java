@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Slf4j
+@RequiredArgsConstructor
 public class User {
 
     public User(String username, String email, String password, String profilePicture) {
@@ -52,6 +54,9 @@ public class User {
     @NonNull
     private String profilePicture;
 
+    @NonNull
+    private Date creationDate;
+
     @DBRef
     private Set<Role> roles;
 
@@ -59,5 +64,4 @@ public class User {
     private List<Comment> comments;
 
     private boolean confirmed;
-
 }

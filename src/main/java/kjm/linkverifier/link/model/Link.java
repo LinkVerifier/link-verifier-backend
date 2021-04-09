@@ -20,7 +20,7 @@ public class Link {
     private String id;
 
     @NonNull
-    private String link;
+    private String linkName;
 
     @NonNull
     private int views;

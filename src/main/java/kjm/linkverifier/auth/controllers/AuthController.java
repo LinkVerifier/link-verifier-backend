@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -124,8 +125,10 @@ public class AuthController {
         User user = new User(registerRequest.getUsername(),
                 registerRequest.getEmail(),
                 encoder.encode(registerRequest.getPassword()),
-                "https://cdn.pixabay.com/photo/2016/10/26/22/00/hamster-1772742_960_720.jpg");
+                "https://cdn.pixabay.com/photo/2016/10/26/22/00/hamster-1772742_960_720.jpg",
+                new Date(registerRequest.getCreationDate()));
 
+        Date date = new Date(registerRequest.getCreationDate());
         Set<String> strRoles = registerRequest.getRoles();
         Set<Role> rolesToSet = new HashSet<>();
 

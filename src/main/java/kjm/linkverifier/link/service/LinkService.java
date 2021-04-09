@@ -18,11 +18,11 @@ public class LinkService {
     }
 
     public boolean existsByLink(String link) {
-        return linkRepository.existsByLink(link);
+        return linkRepository.existsByLinkName(link);
     }
 
     public Optional<Link> findByName(String link) {
-        return linkRepository.findByLink(link);
+        return linkRepository.findByLinkName(link);
     }
 
 }

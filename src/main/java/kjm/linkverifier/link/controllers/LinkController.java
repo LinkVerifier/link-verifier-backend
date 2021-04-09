@@ -62,10 +62,6 @@ public class LinkController {
                     opinion = opinionRepository.findByName(OpinionEnum.SAFE)
                             .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
                     break;
-                case "NEUTRAL":
-                    opinion = opinionRepository.findByName(OpinionEnum.NEUTRAL)
-                            .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
-                    break;
                 case "RELIABLE":
                     opinion = opinionRepository.findByName(OpinionEnum.RELIABLE)
                             .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));

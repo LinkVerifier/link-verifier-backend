@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 public class LinkRequest {
 
     @NotBlank
-    private String link;
+    private String linkName;
 
     @NotBlank
     private Long deliveryDate;

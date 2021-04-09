@@ -29,11 +29,11 @@ public class MainController {
 
     @PostMapping
     public String searchLink(@Valid @RequestBody LinkRequest linkRequest) {
-        if (!linkService.existsByLink(linkRequest.getLink())) {
-            linkService.save(new Link(linkRequest.getLink(), 0, 0, new Date(linkRequest.getDeliveryDate())));
+        if (!linkService.existsByLink(linkRequest.getLinkName())) {
+            linkService.save(new Link(linkRequest.getLinkName(), 0, 0, new Date(linkRequest.getDeliveryDate())));
         }
 
-        Link currentLink = linkService.findByName(linkRequest.getLink())
+        Link currentLink = linkService.findByName(linkRequest.getLinkName())
                 .orElseThrow(() -> new RuntimeException("Error: Link is not found."));
         currentLink.setLastVisitDate(new Date(linkRequest.getDeliveryDate()));
         currentLink.setViews(currentLink.getViews()+1);
