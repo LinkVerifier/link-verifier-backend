@@ -24,6 +24,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,19 +41,16 @@ public class FacebookService {
     private UserRepository userRepository;
 
     @Autowired
-    private JwtUtils jwtUtils;
-
-    @Autowired
     private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User getUserFromFacebook(String fbAccessToken) {
+    public User getUserFromFacebook(String fbAccessToken, Long creationDate) {
         var facebookUser = facebookClient.getUser(fbAccessToken);
         User user;
         if(!userRepository.existsById(facebookUser.getId())) {
-            user = registerFacebookUser(convertUserToFacebookUser(facebookUser));
+            user = registerFacebookUser(convertUserToFacebookUser(facebookUser), creationDate);
         } else {
             user = userRepository.findById(facebookUser.getId()).get();
         }
@@ -70,7 +68,7 @@ public class FacebookService {
                 .build();
     }
 
-    public User registerFacebookUser(User user) {
+    public User registerFacebookUser(User user, Long creationDate) {
         log.info("registering facebook user {}", user.getEmail());
 
          if(userRepository.existsByEmail(user.getEmail())) {
@@ -82,7 +80,7 @@ public class FacebookService {
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found"));
 
         rolesToSet.add(userFacebookRole);
-
+        user.setCreationDate(new Date(creationDate));
         user.setRoles(rolesToSet);
         return userRepository.save(user);
     }

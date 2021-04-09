@@ -16,4 +16,7 @@ public class FacebookLoginRequest implements Serializable {
 
     @NotBlank
     private String accessToken;
+
+    @NotBlank
+    private Long creationDate;
 }

@@ -88,7 +88,7 @@ public class AuthController {
 
     @PostMapping("/facebook/signin")
     public  ResponseEntity<?> facebookAuth(@Valid @RequestBody FacebookLoginRequest facebookLoginRequest) {
-        User user = facebookService.getUserFromFacebook(facebookLoginRequest.getAccessToken());
+        User user = facebookService.getUserFromFacebook(facebookLoginRequest.getAccessToken(), facebookLoginRequest.getCreationDate());
         UserDetailsImpl userDetails2 = UserDetailsImpl.build(user);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails2, null,
