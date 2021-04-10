@@ -1,5 +1,8 @@
 package kjm.linkverifier.link.controllers;
 
+import kjm.linkverifier.auth.models.User;
+import kjm.linkverifier.auth.repository.UserRepository;
+import kjm.linkverifier.auth.security.services.UserDetailsImpl;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.model.Opinion;
@@ -8,8 +11,10 @@ import kjm.linkverifier.link.repository.CommentRepository;
 import kjm.linkverifier.link.repository.LinkRepository;
 import kjm.linkverifier.link.repository.OpinionRepository;
 import kjm.linkverifier.link.requests.CommentRequest;
+import kjm.linkverifier.link.service.LinkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -27,15 +32,20 @@ public class LinkController {
     CommentRepository commentRepository;
 
     @Autowired
-    LinkRepository linkRepository;
+    UserRepository userRepository;
+
+    @Autowired
+    LinkService linkService;
 
     @PostMapping("/{id}")
     public Link addComment(@PathVariable("id") String id, @RequestBody CommentRequest commentRequest) {
-        Link link = linkRepository.findById(id).orElseThrow(() -> new RuntimeException("Error : Link does not exist"));
+        Link link = linkService.findById(id);
         log.info(commentRequest.getComment(), commentRequest.getOpinion(), commentRequest.getDate());
         Date date = new Date(commentRequest.getDate());
         String opinionStr = commentRequest.getOpinion();
         Opinion opinion;
+        String email = ((UserDetailsImpl)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getEmail();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Error: User not found"));
 
         if(opinionStr == null) {
             opinion = opinionRepository.findByName(OpinionEnum.NEUTRAL)
@@ -72,25 +82,26 @@ public class LinkController {
             }
         }
         Comment comment = new Comment(commentRequest.getComment(), date, opinion);
-        List<Comment> commentList = new ArrayList<>();
-        List<Opinion> opinions = new ArrayList<>();
-        if(link.getComments() != null) {
-            commentList = link.getComments();
-        } else if (link.getOpinions() != null) {
-            opinions = link.getOpinions();
+        List<Comment> commentLinkList = link.getComments();
+        List<Comment> commentUserList = user.getComments();
+        if(commentLinkList == null) {
+            commentLinkList = new ArrayList<>();
         }
-        commentList.add(comment);
-        link.setComments(commentList);
-        opinions.add(comment.getOpinion());
-        link.setOpinions(opinions);
+        if (commentUserList == null) {
+            commentUserList = new ArrayList<>();
+        }
+        commentLinkList.add(comment);
+        commentUserList.add(comment);
+        link.setComments(commentLinkList);
+        user.setComments(commentUserList);
         commentRepository.save(comment);
-        return linkRepository.save(link);
+        userRepository.save(user);
+        return linkService.save(link);
     }
 
 
     @GetMapping("/{id}")
     public Link getLinkDetails(@PathVariable("id") String id) {
-        return linkRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Error : Link does not exist"));
+        return linkService.findById(id);
     }
 }

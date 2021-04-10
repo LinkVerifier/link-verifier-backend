@@ -3,9 +3,7 @@ package kjm.linkverifier.auth.security.services;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import kjm.linkverifier.auth.models.Role;
 import kjm.linkverifier.auth.models.User;
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +12,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Data
+@Getter @Setter
 @RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;

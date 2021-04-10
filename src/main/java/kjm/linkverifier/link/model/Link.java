@@ -32,9 +32,6 @@ public class Link {
     private Date lastVisitDate;
 
     @DBRef
-    private List<Opinion> opinions;
-
-    @DBRef
     private List<Comment> comments;
 
 }

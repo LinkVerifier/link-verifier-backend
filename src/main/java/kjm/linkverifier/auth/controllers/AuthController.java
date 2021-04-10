@@ -128,7 +128,6 @@ public class AuthController {
                 "https://cdn.pixabay.com/photo/2016/10/26/22/00/hamster-1772742_960_720.jpg",
                 new Date(registerRequest.getCreationDate()));
 
-        Date date = new Date(registerRequest.getCreationDate());
         Set<String> strRoles = registerRequest.getRoles();
         Set<Role> rolesToSet = new HashSet<>();
 

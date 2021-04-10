@@ -6,9 +6,6 @@ import kjm.linkverifier.auth.models.RoleEnum;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.RoleRepository;
 import kjm.linkverifier.auth.repository.UserRepository;
-import kjm.linkverifier.auth.response.InformationResponse;
-import kjm.linkverifier.auth.response.TokenResponse;
-import kjm.linkverifier.auth.security.jwtToken.JwtUtils;
 import kjm.linkverifier.auth.security.oauth2.FacebookUser;
 import lombok.extern.slf4j.Slf4j;
 import org.passay.CharacterData;
@@ -16,19 +13,12 @@ import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

@@ -1,4 +1,4 @@
-package kjm.linkverifier.link.controllers;
+package kjm.linkverifier.auth.controllers;
 
 import kjm.linkverifier.auth.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;

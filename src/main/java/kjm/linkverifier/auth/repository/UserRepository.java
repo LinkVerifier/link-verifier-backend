@@ -1,6 +1,7 @@
 package kjm.linkverifier.auth.repository;
 
 import kjm.linkverifier.auth.models.User;
+import kjm.linkverifier.link.model.Comment;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.Optional;
@@ -14,5 +15,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByUsername(String username);
 
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByCommentsContaining(Comment comment);
 
 }
