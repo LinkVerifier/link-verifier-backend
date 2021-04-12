@@ -24,6 +24,9 @@ public class Comment {
     private String comment;
 
     @NonNull
+    private String userId;
+
+    @NonNull
     private Date creationDate;
 
     @NonNull

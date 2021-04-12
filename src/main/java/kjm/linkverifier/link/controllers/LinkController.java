@@ -81,7 +81,7 @@ public class LinkController {
                             .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
             }
         }
-        Comment comment = new Comment(commentRequest.getComment(), date, opinion);
+        Comment comment = new Comment(commentRequest.getComment(), user.getId(), date, opinion);
         List<Comment> commentLinkList = link.getComments();
         List<Comment> commentUserList = user.getComments();
         if(commentLinkList == null) {
