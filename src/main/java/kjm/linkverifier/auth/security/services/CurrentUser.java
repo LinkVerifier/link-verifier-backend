@@ -14,17 +14,23 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 @Slf4j
 public class CurrentUser {
-    @Autowired
+
     private static UserRepository userRepository;
 
-    @Autowired
     private static AuthTokenFilter tokenAuthenticationFilter;
 
-    @Autowired
     private static JwtUtils jwtUtils;
 
+    public CurrentUser(UserRepository userRepository,
+                       AuthTokenFilter tokenAuthenticationFilter,
+                       JwtUtils jwtUtils) {
+        CurrentUser.userRepository = userRepository;
+        CurrentUser.jwtUtils = jwtUtils;
+        CurrentUser.tokenAuthenticationFilter = tokenAuthenticationFilter;
+    }
+
     public static User getCurrentUser(HttpServletRequest request){
-        log.info("XD: "+request.getHeader("Bearer "));
+        log.info("XD: "+request.getHeader("Authorization"));
         String token = tokenAuthenticationFilter.parseJwt(request);
         return userRepository.findByEmail(jwtUtils.getUserEmailJwtToken(token)).orElseThrow(() ->
                 new RuntimeException("Error: User with email: " + jwtUtils.getUserEmailJwtToken(token) + " is not authenticated"));
