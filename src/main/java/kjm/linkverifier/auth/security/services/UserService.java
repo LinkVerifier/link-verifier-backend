@@ -23,6 +23,10 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Error: User is not found"));
     }
 
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
     public User updateLikesInComment(Comment comment, Comment newComment) {
         User user = userRepository.findByCommentsContaining(comment)
                 .orElseThrow(() -> new RuntimeException("Error: User is not found"));

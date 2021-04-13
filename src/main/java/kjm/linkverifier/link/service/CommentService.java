@@ -1,11 +1,20 @@
 package kjm.linkverifier.link.service;
 
 import kjm.linkverifier.auth.models.User;
+import kjm.linkverifier.auth.repository.UserRepository;
+import kjm.linkverifier.auth.security.services.UserDetailsImpl;
 import kjm.linkverifier.link.model.Comment;
+import kjm.linkverifier.link.model.Link;
+import kjm.linkverifier.link.model.Opinion;
+import kjm.linkverifier.link.model.OpinionEnum;
 import kjm.linkverifier.link.repository.CommentRepository;
+import kjm.linkverifier.link.repository.OpinionRepository;
+import kjm.linkverifier.link.requests.CommentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -16,12 +25,59 @@ public class CommentService {
     @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    OpinionRepository opinionRepository;
+
     public Optional<Comment> findById(String id) {
         return commentRepository.findById(id);
     }
 
     public Comment save(Comment comment) {
         return commentRepository.save(comment);
+    }
+
+    public Comment getCommentFromCommentRequest(Link link, User user, CommentRequest commentRequest) {
+        Date date = new Date(commentRequest.getDate());
+        String opinionStr = commentRequest.getOpinion();
+        Opinion opinion;
+        if(opinionStr == null) {
+            opinion = opinionRepository.findByName(OpinionEnum.NEUTRAL)
+                    .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
+        } else {
+            switch (opinionStr) {
+                case "VIRUS":
+                    opinion = opinionRepository.findByName(OpinionEnum.VIRUS)
+                            .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
+                    break;
+                case "FAKE_NEWS":
+                    opinion = opinionRepository.findByName(OpinionEnum.FAKE_NEWS)
+                            .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
+                    break;
+                case "FRAUD":
+                    opinion = opinionRepository.findByName(OpinionEnum.FRAUD)
+                            .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
+                    break;
+                case "INDECENT_CONTENT":
+                    opinion = opinionRepository.findByName(OpinionEnum.INDECENT_CONTENT)
+                            .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
+                    break;
+                case "SAFE":
+                    opinion = opinionRepository.findByName(OpinionEnum.SAFE)
+                            .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
+                    break;
+                case "RELIABLE":
+                    opinion = opinionRepository.findByName(OpinionEnum.RELIABLE)
+                            .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
+                    break;
+                default:
+                    opinion = opinionRepository.findByName(OpinionEnum.NEUTRAL)
+                            .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
+            }
+        }
+        return new Comment(commentRequest.getComment(), user.getId(), link.getId(), date, opinion);
     }
 
     public Comment likeComment(Comment comment, User user) {

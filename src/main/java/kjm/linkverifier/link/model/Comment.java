@@ -27,6 +27,9 @@ public class Comment {
     private String userId;
 
     @NonNull
+    private String linkId;
+
+    @NonNull
     private Date creationDate;
 
     @NonNull
