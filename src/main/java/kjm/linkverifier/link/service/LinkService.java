@@ -29,8 +29,9 @@ public class LinkService {
         return linkRepository.existsByLinkName(link);
     }
 
-    public Optional<Link> findByName(String link) {
-        return linkRepository.findByLinkName(link);
+    public Link findByName(String link) {
+        return linkRepository.findByLinkName(link)
+                .orElseThrow(() -> new RuntimeException("Error: Link is not found"));
     }
 
     public Link updateLikesInComment(Comment comment, Comment newComment) {

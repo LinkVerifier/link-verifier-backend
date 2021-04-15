@@ -30,7 +30,6 @@ public class CurrentUser {
     }
 
     public static User getCurrentUser(HttpServletRequest request){
-        log.info("XD: "+request.getHeader("Authorization"));
         String token = tokenAuthenticationFilter.parseJwt(request);
         return userRepository.findByEmail(jwtUtils.getUserEmailJwtToken(token)).orElseThrow(() ->
                 new RuntimeException("Error: User with email: " + jwtUtils.getUserEmailJwtToken(token) + " is not authenticated"));

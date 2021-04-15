@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Slf4j
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     private PasswordEncoder encoder;
@@ -63,17 +63,11 @@ public class AuthController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<String> rolesList = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-
         String jwt = jwtUtils.generateJwtToken(authentication);
         log.info("succesfuly logged in : {}", ((UserDetailsImpl)principal).getEmail());
 
@@ -89,13 +83,7 @@ public class AuthController {
                 AuthorityUtils.createAuthorityList("ROLE_USER"));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<String> rolesList = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
 
         String jwt = jwtUtils.generateJwtToken(authentication);
         log.info("Authenticate: " +((UserDetails)principal).getUsername());

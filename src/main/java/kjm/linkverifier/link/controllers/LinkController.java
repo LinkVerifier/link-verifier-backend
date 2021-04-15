@@ -13,16 +13,15 @@ import kjm.linkverifier.link.repository.CommentRepository;
 import kjm.linkverifier.link.repository.LinkRepository;
 import kjm.linkverifier.link.repository.OpinionRepository;
 import kjm.linkverifier.link.requests.CommentRequest;
+import kjm.linkverifier.link.requests.LinkRequest;
 import kjm.linkverifier.link.service.CommentService;
 import kjm.linkverifier.link.service.LinkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.*;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -46,8 +45,23 @@ public class LinkController {
     @Autowired
     LinkService linkService;
 
-    @PostMapping("/{id}")
-    public Link addComment(@PathVariable("id") String id, @RequestBody CommentRequest commentRequest,
+    @PostMapping
+    public String searchLink(@Valid @RequestBody LinkRequest linkRequest) {
+        String link = linkService.cleanURL(linkRequest.getLinkName());
+        if (!linkService.existsByLink(link)) {
+            linkService.save(new Link(link, 0, 0, new Date(linkRequest.getDeliveryDate())));
+        }
+
+        Link currentLink = linkService.findByName(link);
+        currentLink.setLastVisitDate(new Date(linkRequest.getDeliveryDate()));
+        currentLink.setViews(currentLink.getViews()+1);
+        linkService.save(currentLink);
+        return currentLink.getId();
+    }
+
+    @PostMapping("/{id}/comments")
+    public Link addComment(@PathVariable("id") String id,
+                           @RequestBody CommentRequest commentRequest,
                            HttpServletRequest http) {
         Link link = linkService.findById(id);
         User user = CurrentUser.getCurrentUser(http);

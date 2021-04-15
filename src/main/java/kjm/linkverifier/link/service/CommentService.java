@@ -2,7 +2,6 @@ package kjm.linkverifier.link.service;
 
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.UserRepository;
-import kjm.linkverifier.auth.security.services.UserDetailsImpl;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.model.Opinion;
@@ -11,12 +10,10 @@ import kjm.linkverifier.link.repository.CommentRepository;
 import kjm.linkverifier.link.repository.OpinionRepository;
 import kjm.linkverifier.link.requests.CommentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -31,8 +28,9 @@ public class CommentService {
     @Autowired
     OpinionRepository opinionRepository;
 
-    public Optional<Comment> findById(String id) {
-        return commentRepository.findById(id);
+    public Comment findById(String id) {
+        return commentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Error: Comment is not found"));
     }
 
     public Comment save(Comment comment) {

@@ -27,22 +27,4 @@ public class MainController {
         return ResponseEntity.ok().body("OK");
     }
 
-    @PostMapping
-    public String searchLink(@Valid @RequestBody LinkRequest linkRequest) {
-        String link = linkService.cleanURL(linkRequest.getLinkName());
-        if (!linkService.existsByLink(link)) {
-            linkService.save(new Link(link, 0, 0, new Date(linkRequest.getDeliveryDate())));
-        }
-
-        Link currentLink = linkService.findByName(link)
-                .orElseThrow(() -> new RuntimeException("Error: Link is not found."));
-        currentLink.setLastVisitDate(new Date(linkRequest.getDeliveryDate()));
-        currentLink.setViews(currentLink.getViews()+1);
-
-        linkService.save(currentLink);
-
-        return currentLink.getId();
-    }
-
-
 }
