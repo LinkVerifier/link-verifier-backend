@@ -77,13 +77,7 @@ public class AuthController {
         String jwt = jwtUtils.generateJwtToken(authentication);
         log.info("succesfuly logged in : {}", ((UserDetailsImpl)principal).getEmail());
 
-        return ResponseEntity.ok(new TokenResponse(
-                jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userRepository.findByEmail(userDetails.getEmail()).get().getProfilePicture(),
-                userDetails.getEmail(),
-                rolesList));
+        return ResponseEntity.ok(new TokenResponse(jwt));
     }
 
     @PostMapping("/facebook/signin")
@@ -106,12 +100,7 @@ public class AuthController {
         String jwt = jwtUtils.generateJwtToken(authentication);
         log.info("Authenticate: " +((UserDetails)principal).getUsername());
         log.info("succesfuly logged in : {}", ((UserDetailsImpl)principal).getEmail());
-        return ResponseEntity.ok(new TokenResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userRepository.findByEmail(userDetails.getEmail()).get().getProfilePicture(),
-                userDetails.getEmail(),
-                rolesList));
+        return ResponseEntity.ok(new TokenResponse(jwt));
     }
 
     @PostMapping("/signup")
