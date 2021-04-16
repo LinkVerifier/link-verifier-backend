@@ -60,5 +60,6 @@ public class User {
     @DBRef
     private List<Comment> comments;
 
-    private boolean confirmed;
+    @NonNull
+    private boolean isConfirmed = false;
 }

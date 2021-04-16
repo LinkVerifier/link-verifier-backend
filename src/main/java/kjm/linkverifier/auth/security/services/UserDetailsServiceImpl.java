@@ -24,13 +24,4 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return UserDetailsImpl.build(user);
     }
-
-    @Transactional
-    public UserDetails loadUserById(String id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("User", id)
-        );
-
-        return UserDetailsImpl.build(user);
-    }
 }

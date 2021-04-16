@@ -1,26 +1,14 @@
 package kjm.linkverifier.link.controllers;
 
 import kjm.linkverifier.auth.models.User;
-import kjm.linkverifier.auth.repository.UserRepository;
-import kjm.linkverifier.auth.security.services.CurrentUser;
-import kjm.linkverifier.auth.security.services.UserDetailsImpl;
-import kjm.linkverifier.auth.security.services.UserService;
+import kjm.linkverifier.auth.service.CurrentUser;
 import kjm.linkverifier.link.model.Comment;
-import kjm.linkverifier.link.model.Link;
-import kjm.linkverifier.link.repository.CommentRepository;
-import kjm.linkverifier.link.repository.LinkRepository;
 import kjm.linkverifier.link.service.CommentService;
-import kjm.linkverifier.link.service.LinkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @RestController
 @Slf4j
@@ -30,12 +18,6 @@ public class CommentController {
 
     @Autowired
     private CommentService commentService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private LinkService linkService;
 
     @GetMapping("/{id}")
     public Comment getComment(@PathVariable String id) {

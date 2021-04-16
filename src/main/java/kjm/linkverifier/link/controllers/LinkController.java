@@ -1,16 +1,11 @@
 package kjm.linkverifier.link.controllers;
 
 import kjm.linkverifier.auth.models.User;
-import kjm.linkverifier.auth.repository.UserRepository;
-import kjm.linkverifier.auth.security.services.CurrentUser;
-import kjm.linkverifier.auth.security.services.UserDetailsImpl;
-import kjm.linkverifier.auth.security.services.UserService;
+import kjm.linkverifier.auth.service.CurrentUser;
+import kjm.linkverifier.auth.service.UserService;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
-import kjm.linkverifier.link.model.Opinion;
-import kjm.linkverifier.link.model.OpinionEnum;
 import kjm.linkverifier.link.repository.CommentRepository;
-import kjm.linkverifier.link.repository.LinkRepository;
 import kjm.linkverifier.link.repository.OpinionRepository;
 import kjm.linkverifier.link.requests.CommentRequest;
 import kjm.linkverifier.link.requests.LinkRequest;

@@ -9,6 +9,7 @@ import kjm.linkverifier.link.model.OpinionEnum;
 import kjm.linkverifier.link.repository.CommentRepository;
 import kjm.linkverifier.link.repository.OpinionRepository;
 import kjm.linkverifier.link.requests.CommentRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class CommentService {
 
     @Autowired
@@ -41,6 +43,7 @@ public class CommentService {
         Date date = new Date(commentRequest.getDate());
         String opinionStr = commentRequest.getOpinion();
         Opinion opinion;
+        log.info(opinionStr + " <- opinion");
         if(opinionStr == null) {
             opinion = opinionRepository.findByName(OpinionEnum.NEUTRAL)
                     .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));

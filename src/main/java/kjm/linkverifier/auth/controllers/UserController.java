@@ -2,16 +2,13 @@ package kjm.linkverifier.auth.controllers;
 
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.UserRepository;
-import kjm.linkverifier.auth.security.jwtToken.AuthTokenFilter;
-import kjm.linkverifier.auth.security.jwtToken.JwtUtils;
-import kjm.linkverifier.auth.security.services.CurrentUser;
+import kjm.linkverifier.auth.service.CurrentUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Currency;
 
 @RestController
 @Slf4j
