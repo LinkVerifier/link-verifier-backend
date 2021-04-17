@@ -95,47 +95,6 @@ public class AuthController {
         return ResponseEntity.ok(new TokenResponse(jwt));
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody RegisterRequest registerRequest) {
-    if(userService.existsByEmail(registerRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new InformationResponse("Error: Email is already in use!"));
-        }
-
-        User user = new User(registerRequest.getUsername(),
-                registerRequest.getEmail(),
-                encoder.encode(registerRequest.getPassword()),
-                "https://cdn.pixabay.com/photo/2016/10/26/22/00/hamster-1772742_960_720.jpg",
-                new Date(registerRequest.getCreationDate()));
-
-        Set<String> strRoles = registerRequest.getRoles();
-        Set<Role> rolesToSet = new HashSet<>();
-
-        if (strRoles == null) {
-            Role userRole = roleRepository.findByName(RoleEnum.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            rolesToSet.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                if(role.equals("admin")) {
-                    Role adminRole = roleRepository.findByName(RoleEnum.ROLE_ADMIN)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                    rolesToSet.add(adminRole);
-                } else {
-                    Role userRole = roleRepository.findByName(RoleEnum.ROLE_USER)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                    rolesToSet.add(userRole);
-                }
-            });
-        }
-
-        user.setRoles(rolesToSet);
-        userService.save(user);
-
-        return ResponseEntity.ok(new InformationResponse("User registered successfully!"));
-    }
-
     @PostMapping("/logout")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> logoutUser() {

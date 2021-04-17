@@ -1,15 +1,17 @@
 package kjm.linkverifier.auth.service;
 
-import kjm.linkverifier.auth.mail.MailVerificationService;
-import kjm.linkverifier.auth.mail.MailVerificationToken;
-import kjm.linkverifier.auth.mail.TokenType;
+import kjm.linkverifier.auth.mail.*;
 import kjm.linkverifier.auth.models.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
+@Slf4j
 public class SignUpService {
 
     @Autowired
@@ -18,18 +20,38 @@ public class SignUpService {
     @Autowired
     private MailVerificationService verificationTokenService;
 
+    @Autowired
+    private MailVerificationTokenRepository tokenRepository;
 
-    public MailVerificationToken createMailVerificationToken(User user) {
-        MailVerificationToken token = new MailVerificationToken(user, TokenType.SIGNUP);
-        return verificationTokenService.save(token);
-    }
+    @Autowired
+    private MailService mailService;
 
 
-    public User confirmSignUp(String email, String token) {
-        User user = userService.findByEmail(email);
-        MailVerificationToken t = verificationTokenService.findByUserAndTokenAndTokenType(user, token, TokenType.SIGNUP);
+    public User confirmSignUp(String id, String token) {
+        User user = userService.findById(id);
+        MailVerificationToken tokenToDelete = verificationTokenService.findByUserAndTokenAndTokenType(user, token, TokenType.SIGNUP);
+        log.info("email: {}, token to delete {}", user.getEmail(), tokenToDelete);
         user.setConfirmed(true);
-        verificationTokenService.delete(t);
+        verificationTokenService.delete(tokenToDelete);
         return userService.save(user);
     }
+
+    public void resendVerificationToken(String email) throws MessagingException {
+        User user = userService.findByEmail(email);
+        Optional<MailVerificationToken> t = tokenRepository.findByUserAndTokenType(user,TokenType.SIGNUP);
+        MailVerificationToken token;
+        if (t.isPresent()) {
+            token = t.get();
+            token.updateToken();
+            tokenRepository.save(token);
+        } else
+            token = createVerificationToken(user);
+        mailService.sendRegistrationEmail(token.getToken(), user);
+    }
+
+    public MailVerificationToken createVerificationToken(User user) {
+        MailVerificationToken token = new MailVerificationToken(user,TokenType.SIGNUP);
+        return tokenRepository.save(token);
+    }
+
 }

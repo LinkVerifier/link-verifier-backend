@@ -1,12 +1,12 @@
 package kjm.linkverifier.auth.mail;
 
-import com.sun.el.parser.Token;
 import kjm.linkverifier.auth.models.User;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -15,6 +15,8 @@ import java.util.UUID;
 
 @Data
 @Document(collection = "verification_token")
+@AllArgsConstructor
+@NoArgsConstructor
 public class MailVerificationToken {
     private static final int EXPIRATION = 60 * 24;
 

@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -20,6 +18,11 @@ public class UserService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Error: User is not found"));
+    }
+
+    public User findById(String id) {
+        return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Error: User is not found"));
     }
 
