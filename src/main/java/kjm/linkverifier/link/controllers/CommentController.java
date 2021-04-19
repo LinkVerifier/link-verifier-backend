@@ -52,16 +52,16 @@ public class CommentController {
                                                 HttpServletRequest httpServletRequest) {
         Comment comment = commentService.findById(id);
         User user = CurrentUser.getCurrentUser(httpServletRequest);
-        Comment newComment = commentService.dislikeComment(comment, user);
+        Comment newComment = commentService.dislikeUndislikeComment(comment, user);
         return commentService.save(newComment);
     }
 
-    @PutMapping("/{id}/undislike")
-    public Comment deleteDislike(@PathVariable String id,
-                                 HttpServletRequest httpServletRequest) {
-        Comment comment = commentService.findById(id);
-        User user = CurrentUser.getCurrentUser(httpServletRequest);
-        Comment newComment = commentService.undislikeComment(comment, user);
-        return commentService.save(newComment);
-    }
+//    @PutMapping("/{id}/undislike")
+//    public Comment deleteDislike(@PathVariable String id,
+//                                 HttpServletRequest httpServletRequest) {
+//        Comment comment = commentService.findById(id);
+//        User user = CurrentUser.getCurrentUser(httpServletRequest);
+//        Comment newComment = commentService.undislikeComment(comment, user);
+//        return commentService.save(newComment);
+//    }
 }

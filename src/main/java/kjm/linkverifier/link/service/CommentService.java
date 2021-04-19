@@ -85,9 +85,6 @@ public class CommentService {
         Set<String> usersWhoLikeSet = comment.getUsersWhoLike();
         Set<String> usersWhoDislikeSet = comment.getUsersWhoDislike();
         if (usersWhoLikeSet.contains(user.getId())) {
-            if(usersWhoLikeSet == null) {
-                usersWhoLikeSet = new HashSet<>();
-            }
             usersWhoLikeSet.remove(user.getId());
             comment.setUsersWhoLike(usersWhoLikeSet);
         } else {
@@ -116,31 +113,36 @@ public class CommentService {
 //        return comment;
 //    }
 
-    public Comment dislikeComment(Comment comment, User user) {
+    public Comment dislikeUndislikeComment(Comment comment, User user) {
         Set<String> usersWhoLikeSet = comment.getUsersWhoLike();
         Set<String> usersWhoDislikeSet = comment.getUsersWhoDislike();
 
-        if(usersWhoLikeSet == null) {
-            usersWhoLikeSet = new HashSet<>();
+        if (usersWhoDislikeSet.contains(user.getId())) {
+            if(usersWhoDislikeSet == null) {
+                usersWhoDislikeSet = new HashSet<>();
+            }
+            usersWhoDislikeSet.remove(user.getId());
+            comment.setUsersWhoDislike(usersWhoDislikeSet);
+        } else {
+            if(usersWhoLikeSet == null) {
+                usersWhoLikeSet = new HashSet<>();
+            }
+            if (usersWhoDislikeSet == null) {
+                usersWhoDislikeSet = new HashSet<>();
+            }
+            usersWhoLikeSet.remove(user.getId());
+            usersWhoDislikeSet.add(user.getId());
+            comment.setUsersWhoLike(usersWhoLikeSet);
+            comment.setUsersWhoDislike(usersWhoDislikeSet);
         }
-        if (usersWhoDislikeSet == null) {
-            usersWhoDislikeSet = new HashSet<>();
-        }
-        usersWhoLikeSet.remove(user.getId());
-        usersWhoDislikeSet.add(user.getId());
-        comment.setUsersWhoLike(usersWhoLikeSet);
-        comment.setUsersWhoDislike(usersWhoDislikeSet);
+
         return comment;
     }
 
     public Comment undislikeComment(Comment comment, User user) {
         Set<String> usersWhoDislikeSet = comment.getUsersWhoDislike();
 
-        if(usersWhoDislikeSet == null) {
-            usersWhoDislikeSet = new HashSet<>();
-        }
-        usersWhoDislikeSet.remove(user.getId());
-        comment.setUsersWhoDislike(usersWhoDislikeSet);
+
         return comment;
     }
 }
