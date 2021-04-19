@@ -3,11 +3,9 @@ package kjm.linkverifier.auth.mail;
 import kjm.linkverifier.auth.models.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
@@ -15,13 +13,9 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
 
-
 @Component
 @Slf4j
 public class MailService {
-
-    private final String CONTEXT = "http://localhost:8080/";
-
     @Autowired
     private JavaMailSender mailSender;
 
@@ -33,7 +27,6 @@ public class MailService {
                 user.getId() + "&token=" + token;
         createEmail(url, user,"LinkVerifier - Activation link \n");
     }
-
 
     private void createEmail(String content,User user, String subject) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
@@ -50,10 +43,6 @@ public class MailService {
         helper.setTo(user.getEmail());
         helper.setSubject(subject);
         mailSender.send(message);
-//        SimpleMailMessage email = new SimpleMailMessage();
-//        email.setSubject(subject);
-//        email.setText(content);
-//        email.setTo(user.getEmail());
     }
 
     public void sendRegistrationEmail(String token, User user) throws MessagingException {

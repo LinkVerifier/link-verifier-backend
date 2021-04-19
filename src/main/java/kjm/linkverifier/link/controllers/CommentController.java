@@ -25,7 +25,7 @@ public class CommentController {
     }
 
 
-    @GetMapping("/{id}/like")
+    @PutMapping("/{id}/like")
     public Comment updateUsersWhoLikeComment(@PathVariable String id,
                                              HttpServletRequest httpServletRequest) {
 
@@ -38,7 +38,7 @@ public class CommentController {
         return commentService.save(newComment);
     }
 
-    @GetMapping("/{id}/unlike")
+    @PutMapping("/{id}/unlike")
     public Comment deleteLike(@PathVariable String id,
                               HttpServletRequest httpServletRequest) {
         Comment comment = commentService.findById(id);
@@ -47,7 +47,7 @@ public class CommentController {
         return commentService.save(newComment);
     }
 
-    @GetMapping("/{id}/dislike")
+    @PutMapping("/{id}/dislike")
     public Comment updateUsersWhoDislikeComment(@PathVariable String id,
                                                 HttpServletRequest httpServletRequest) {
         Comment comment = commentService.findById(id);
@@ -56,7 +56,7 @@ public class CommentController {
         return commentService.save(newComment);
     }
 
-    @GetMapping("/{id}/undislike")
+    @PutMapping("/{id}/undislike")
     public Comment deleteDislike(@PathVariable String id,
                                  HttpServletRequest httpServletRequest) {
         Comment comment = commentService.findById(id);
