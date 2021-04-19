@@ -81,33 +81,40 @@ public class CommentService {
         return new Comment(commentRequest.getComment(), user.getId(), link.getId(), date, opinion);
     }
 
-    public Comment likeComment(Comment comment, User user) {
+    public Comment likeUnlikeComment(Comment comment, User user) {
         Set<String> usersWhoLikeSet = comment.getUsersWhoLike();
         Set<String> usersWhoDislikeSet = comment.getUsersWhoDislike();
-
-        if(usersWhoLikeSet == null) {
-            usersWhoLikeSet = new HashSet<>();
+        if (usersWhoLikeSet.contains(user.getId())) {
+            if(usersWhoLikeSet == null) {
+                usersWhoLikeSet = new HashSet<>();
+            }
+            usersWhoLikeSet.remove(user.getId());
+            comment.setUsersWhoLike(usersWhoLikeSet);
+        } else {
+            if(usersWhoLikeSet == null) {
+                usersWhoLikeSet = new HashSet<>();
+            }
+            if (usersWhoDislikeSet == null) {
+                usersWhoDislikeSet = new HashSet<>();
+            }
+            usersWhoDislikeSet.remove(user.getId());
+            usersWhoLikeSet.add(user.getId());
+            comment.setUsersWhoLike(usersWhoLikeSet);
+            comment.setUsersWhoDislike(usersWhoDislikeSet);
         }
-        if (usersWhoDislikeSet == null) {
-            usersWhoDislikeSet = new HashSet<>();
-        }
-        usersWhoDislikeSet.remove(user.getId());
-        usersWhoLikeSet.add(user.getId());
-        comment.setUsersWhoLike(usersWhoLikeSet);
-        comment.setUsersWhoDislike(usersWhoDislikeSet);
         return comment;
     }
 
-    public Comment unlikeComment(Comment comment, User user) {
-        Set<String> usersWhoLikeSet = comment.getUsersWhoLike();
-
-        if(usersWhoLikeSet == null) {
-            usersWhoLikeSet = new HashSet<>();
-        }
-        usersWhoLikeSet.remove(user.getId());
-        comment.setUsersWhoLike(usersWhoLikeSet);
-        return comment;
-    }
+//    public Comment unlikeComment(Comment comment, User user) {
+//        Set<String> usersWhoLikeSet = comment.getUsersWhoLike();
+//
+//        if(usersWhoLikeSet == null) {
+//            usersWhoLikeSet = new HashSet<>();
+//        }
+//        usersWhoLikeSet.remove(user.getId());
+//        comment.setUsersWhoLike(usersWhoLikeSet);
+//        return comment;
+//    }
 
     public Comment dislikeComment(Comment comment, User user) {
         Set<String> usersWhoLikeSet = comment.getUsersWhoLike();

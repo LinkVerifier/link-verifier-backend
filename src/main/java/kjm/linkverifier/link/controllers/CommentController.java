@@ -31,21 +31,21 @@ public class CommentController {
 
         Comment comment = commentService.findById(id);
         User user = CurrentUser.getCurrentUser(httpServletRequest);
-        Comment newComment = commentService.likeComment(comment, user);
+        Comment newComment = commentService.likeUnlikeComment(comment, user);
 //        linkService.updateLikesInComment(comment, newComment);
 //        userService.updateLikesInComment(comment, newComment);
 
         return commentService.save(newComment);
     }
 
-    @PutMapping("/{id}/unlike")
-    public Comment deleteLike(@PathVariable String id,
-                              HttpServletRequest httpServletRequest) {
-        Comment comment = commentService.findById(id);
-        User user = CurrentUser.getCurrentUser(httpServletRequest);
-        Comment newComment = commentService.unlikeComment(comment, user);
-        return commentService.save(newComment);
-    }
+//    @PutMapping("/{id}/unlike")
+//    public Comment deleteLike(@PathVariable String id,
+//                              HttpServletRequest httpServletRequest) {
+//        Comment comment = commentService.findById(id);
+//        User user = CurrentUser.getCurrentUser(httpServletRequest);
+//        Comment newComment = commentService.unlikeComment(comment, user);
+//        return commentService.save(newComment);
+//    }
 
     @PutMapping("/{id}/dislike")
     public Comment updateUsersWhoDislikeComment(@PathVariable String id,
