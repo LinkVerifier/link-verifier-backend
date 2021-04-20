@@ -35,7 +35,7 @@ public class Comment {
     @NonNull
     private Opinion opinion;
 
-    private Set<String> usersWhoLike;
+    private Set<String> usersWhoLike = new HashSet<>();
 
-    private Set<String> usersWhoDislike;
+    private Set<String> usersWhoDislike = new HashSet<>();
 }
