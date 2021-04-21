@@ -5,8 +5,8 @@ import kjm.linkverifier.auth.models.Role;
 import kjm.linkverifier.auth.models.RoleEnum;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.RoleRepository;
-import kjm.linkverifier.auth.request.RegisterRequest;
-import kjm.linkverifier.auth.response.InformationResponse;
+import kjm.linkverifier.auth.web.request.RegisterRequest;
+import kjm.linkverifier.auth.web.response.InformationResponse;
 import kjm.linkverifier.auth.service.SignUpService;
 import kjm.linkverifier.auth.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -84,8 +84,8 @@ public class SignUpController {
     }
 
     @PutMapping("/signup/confirm")
-    public User confirmRegistration(@RequestParam String userId, @RequestParam String token) {
-        log.info("id {}, token {}",userId,token);
+    public User confirmRegistration(@RequestParam(name = "userId") String userId, @RequestParam(name = "token") String token) {
+        log.info("id {}, token {}",userId, token);
         return signUpService.confirmSignUp(userId, token);
     }
 

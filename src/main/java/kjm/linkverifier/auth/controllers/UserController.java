@@ -28,6 +28,17 @@ public class UserController {
                 .orElseThrow(() -> new RuntimeException(id));
     }
 
+//    @PutMapping("/{id}")
+//    public ResponseEntity<?> changeDetails(@PathVariable("id") String id) {
+//        log.info("getting user {}", userRepository.findById(id));
+//
+//        return userRepository.findById(id)
+//                .map(ResponseEntity::ok)
+//                .orElseThrow(() -> new RuntimeException(id));
+//    }
+
+
+
     @GetMapping("/get_user")
     public User getCurrentUser(HttpServletRequest request){
         return CurrentUser.getCurrentUser(request);

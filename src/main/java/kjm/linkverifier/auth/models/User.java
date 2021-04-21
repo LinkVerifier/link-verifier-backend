@@ -1,5 +1,6 @@
 package kjm.linkverifier.auth.models;
 
+import kjm.linkverifier.files.model.File;
 import kjm.linkverifier.link.model.Comment;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -54,12 +55,16 @@ public class User {
     @NonNull
     private Date creationDate;
 
+    @NonNull
+    private boolean isConfirmed = false;
+
     @DBRef
     private Set<Role> roles;
 
     @DBRef
     private List<Comment> comments;
 
-    @NonNull
-    private boolean isConfirmed = false;
+    @DBRef
+    private File file;
+
 }
