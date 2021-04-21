@@ -21,8 +21,6 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findUser(@PathVariable("id") String id) {
-        log.info("getting user {}", userRepository.findById(id));
-
         return userRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseThrow(() -> new RuntimeException(id));

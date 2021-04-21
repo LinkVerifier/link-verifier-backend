@@ -15,6 +15,8 @@ public interface CommentRepository extends MongoRepository<Comment, String> {
 
     List<Comment> findAllByOrderByCreationDateDesc();
 
+    List<Comment> findAllByLinkIdOrderByCreationDateDesc(String id);
+
     void deleteById(String id);
 
 }

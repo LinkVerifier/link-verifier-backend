@@ -62,7 +62,7 @@ public class User {
     private Set<Role> roles;
 
     @DBRef
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 
     @DBRef
     private File file;

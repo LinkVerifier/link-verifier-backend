@@ -65,23 +65,22 @@ public class LinkController {
                            HttpServletRequest http) {
         Link link = linkService.findById(id);
         User user = CurrentUser.getCurrentUser(http);
-        log.info(commentRequest.getComment(), commentRequest.getOpinion(), commentRequest.getDate());
         Comment comment = commentService.getCommentFromCommentRequest(link, user, commentRequest);
 
         List<Comment> commentLinkList = link.getComments();
         List<Comment> commentUserList = user.getComments();
-        if(commentLinkList == null) {
-            commentLinkList = new ArrayList<>();
-        }
-        if (commentUserList == null) {
-            commentUserList = new ArrayList<>();
-        }
+//        if(commentLinkList == null) {
+//            commentLinkList = new ArrayList<>();
+//        }
+//        if (commentUserList == null) {
+//            commentUserList = new ArrayList<>();
+//        }
         commentLinkList.add(comment);
         commentUserList.add(comment);
-        link.setComments(commentLinkList);
-        user.setComments(commentUserList);
-        commentRepository.save(comment);
+        commentService.save(comment);
         userService.save(user);
+        link.setComments(commentRepository.findAllByLinkIdOrderByCreationDateDesc(id));
+        user.setComments(commentUserList);
         return linkService.save(link);
     }
 
