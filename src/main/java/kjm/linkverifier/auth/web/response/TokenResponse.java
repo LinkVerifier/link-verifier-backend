@@ -1,8 +1,6 @@
-package kjm.linkverifier.auth.response;
+package kjm.linkverifier.auth.web.response;
 
 import lombok.*;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor

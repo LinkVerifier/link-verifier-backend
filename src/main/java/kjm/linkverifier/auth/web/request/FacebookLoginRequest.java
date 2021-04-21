@@ -1,4 +1,4 @@
-package kjm.linkverifier.auth.request;
+package kjm.linkverifier.auth.web.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
