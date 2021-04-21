@@ -118,4 +118,8 @@ public class CommentService {
 
         return comment;
     }
+
+    public void deleteById(String id) {
+        commentRepository.deleteById(id);
+    }
 }

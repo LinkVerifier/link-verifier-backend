@@ -6,6 +6,8 @@ import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,6 +47,12 @@ public class CommentController {
         User user = CurrentUser.getCurrentUser(httpServletRequest);
         Comment newComment = commentService.dislikeUndislikeComment(comment, user);
         return commentService.save(newComment);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable String id) {
+        commentService.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
