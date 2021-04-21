@@ -3,6 +3,7 @@ package kjm.linkverifier.link.service;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.repository.LinkRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class LinkService {
 
     @Autowired
@@ -58,6 +60,7 @@ public class LinkService {
     }
 
     public List<Link> findTopByOrderByIdDesc(int from, int to) {
+        log.info("from {}, to {} ", from, to);
         return linkRepository.findTopByOrderByIdDesc().subList(from, to);
     }
 

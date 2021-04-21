@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -50,11 +51,19 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        commentService.deleteById(id);
+    public ResponseEntity<?> delete(@PathVariable String id,
+                                    HttpServletRequest httpServletRequest) {
+        User user = CurrentUser.getCurrentUser(httpServletRequest);
+        Comment comment = commentService.findById(id);
+        if(user.getComments().contains(comment)) {
+            commentService.deleteById(id);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
+    @GetMapping
+    public List<Comment> getAllComments() {
+        return commentService.findAllByOrderByCreationDateDesc();
+    }
 
 }

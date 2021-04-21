@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -121,5 +122,9 @@ public class CommentService {
 
     public void deleteById(String id) {
         commentRepository.deleteById(id);
+    }
+
+    public List<Comment> findAllByOrderByCreationDateDesc() {
+        return commentRepository.findAllByOrderByCreationDateDesc();
     }
 }
