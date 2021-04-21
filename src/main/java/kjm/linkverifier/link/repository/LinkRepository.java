@@ -4,6 +4,7 @@ import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface LinkRepository extends MongoRepository<Link, String> {
@@ -13,4 +14,5 @@ public interface LinkRepository extends MongoRepository<Link, String> {
 
     Optional<Link> findByCommentsContaining(Comment comment);
 
+    List<Link> findTopByOrderByIdDesc();
 }

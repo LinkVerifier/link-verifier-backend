@@ -88,9 +88,6 @@ public class CommentService {
             usersWhoLikeSet.remove(user.getId());
             comment.setUsersWhoLike(usersWhoLikeSet);
         } else {
-            if(usersWhoLikeSet == null) {
-                usersWhoLikeSet = new HashSet<>();
-            }
             if (usersWhoDislikeSet == null) {
                 usersWhoDislikeSet = new HashSet<>();
             }
@@ -102,46 +99,22 @@ public class CommentService {
         return comment;
     }
 
-//    public Comment unlikeComment(Comment comment, User user) {
-//        Set<String> usersWhoLikeSet = comment.getUsersWhoLike();
-//
-//        if(usersWhoLikeSet == null) {
-//            usersWhoLikeSet = new HashSet<>();
-//        }
-//        usersWhoLikeSet.remove(user.getId());
-//        comment.setUsersWhoLike(usersWhoLikeSet);
-//        return comment;
-//    }
-
     public Comment dislikeUndislikeComment(Comment comment, User user) {
         Set<String> usersWhoLikeSet = comment.getUsersWhoLike();
         Set<String> usersWhoDislikeSet = comment.getUsersWhoDislike();
 
         if (usersWhoDislikeSet.contains(user.getId())) {
-            if(usersWhoDislikeSet == null) {
-                usersWhoDislikeSet = new HashSet<>();
-            }
             usersWhoDislikeSet.remove(user.getId());
             comment.setUsersWhoDislike(usersWhoDislikeSet);
         } else {
-            if(usersWhoLikeSet == null) {
+            if (usersWhoLikeSet == null) {
                 usersWhoLikeSet = new HashSet<>();
-            }
-            if (usersWhoDislikeSet == null) {
-                usersWhoDislikeSet = new HashSet<>();
             }
             usersWhoLikeSet.remove(user.getId());
             usersWhoDislikeSet.add(user.getId());
             comment.setUsersWhoLike(usersWhoLikeSet);
             comment.setUsersWhoDislike(usersWhoDislikeSet);
         }
-
-        return comment;
-    }
-
-    public Comment undislikeComment(Comment comment, User user) {
-        Set<String> usersWhoDislikeSet = comment.getUsersWhoDislike();
-
 
         return comment;
     }

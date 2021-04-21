@@ -57,4 +57,9 @@ public class LinkService {
         return url;
     }
 
+    public List<Link> findTopByOrderByIdDesc(int from, int to) {
+        return linkRepository.findTopByOrderByIdDesc().subList(from, to);
+    }
+
+
 }

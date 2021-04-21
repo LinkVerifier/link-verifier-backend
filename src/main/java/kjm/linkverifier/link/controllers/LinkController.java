@@ -54,6 +54,13 @@ public class LinkController {
         return currentLink.getId();
     }
 
+    @GetMapping("/last/{number}")
+    public List<Link> showTheLatestLinks(@PathVariable int number) {
+        return linkService.findTopByOrderByIdDesc(0, number);
+    }
+
+
+
     @PostMapping("/{id}/comments")
     public Link addComment(@PathVariable("id") String id,
                            @RequestBody CommentRequest commentRequest,
