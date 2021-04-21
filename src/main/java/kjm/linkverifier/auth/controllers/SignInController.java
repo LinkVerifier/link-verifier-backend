@@ -29,15 +29,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @Slf4j
 @RequestMapping("/auth")
-public class AuthController {
+public class SignInController {
 
     private PasswordEncoder encoder;
     private RoleRepository roleRepository;
@@ -48,10 +45,10 @@ public class AuthController {
     private SignUpService signUpService;
 
     @Autowired
-    public AuthController(PasswordEncoder encoder, RoleRepository roleRepository,
-                          UserService userService, JwtUtils jwtUtils,
-                          AuthenticationManager authenticationManager, FacebookService facebookService,
-                          SignUpService signUpService) {
+    public SignInController(PasswordEncoder encoder, RoleRepository roleRepository,
+                            UserService userService, JwtUtils jwtUtils,
+                            AuthenticationManager authenticationManager, FacebookService facebookService,
+                            SignUpService signUpService) {
         this.encoder = encoder;
         this.roleRepository = roleRepository;
         this.userService = userService;
