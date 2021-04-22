@@ -33,7 +33,7 @@ public class FileController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/upload")
+    @PutMapping("/upload")
     public ResponseEntity<ResponseMessage> uploadFile(@RequestParam("file") MultipartFile file,
                                                       HttpServletRequest httpServletRequest) {
         String message = "";

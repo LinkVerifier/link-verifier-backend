@@ -62,15 +62,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests().antMatchers("/auth/signup/confirm/**").permitAll()
                 .antMatchers("/auth/signup/**").permitAll()
+                .antMatchers("files/**").permitAll()
                 .antMatchers("/**").permitAll()
                 .antMatchers("/links/**").permitAll()
                 .antMatchers("/facebook/signin").permitAll()
                 .anyRequest().authenticated()
-        .and().logout()
-        .logoutUrl("/api/auth/logout")
-        .deleteCookies("JSESSIONID")
-        .clearAuthentication(true)
-        .permitAll();
+                .and().logout()
+                .logoutUrl("/api/auth/logout")
+                .deleteCookies("JSESSIONID")
+                .clearAuthentication(true)
+                .permitAll();
 
 
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
