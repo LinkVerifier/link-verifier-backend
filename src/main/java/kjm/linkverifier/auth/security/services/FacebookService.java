@@ -7,7 +7,10 @@ import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.RoleRepository;
 import kjm.linkverifier.auth.repository.UserRepository;
 import kjm.linkverifier.auth.security.oauth2.FacebookUser;
+import kjm.linkverifier.files.model.File;
+import kjm.linkverifier.files.service.FileService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.passay.CharacterData;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
@@ -16,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,6 +41,9 @@ public class FacebookService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private FileService fileService;
+
     public User getUserFromFacebook(String fbAccessToken, Long creationDate) {
         var facebookUser = facebookClient.getUser(fbAccessToken);
         User user;
@@ -49,12 +57,23 @@ public class FacebookService {
     }
 
     public User convertUserToFacebookUser(FacebookUser facebookUser) {
+        String url = facebookUser.getPicture().getData().getUrl();
+        log.info("url {}", url);
+        String extension = url.substring(url.lastIndexOf("."));
+        byte[] fileContent = new byte[0];
+        try {
+            fileContent = IOUtils.toByteArray(new URL(url));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        File file = fileService.store(new File(facebookUser.getPicture().toString(), "image/"+extension, fileContent));
+
         return User.builder()
                 .id(facebookUser.getId())
                 .email(facebookUser.getEmail())
                 .username(facebookUser.getFirstName() + " " + facebookUser.getLastName())
                 .password(passwordEncoder.encode(generatePassayPassword(8)))
-                .profilePicture(facebookUser.getPicture().getData().getUrl())
+                .file(file)
                 .build();
     }
 

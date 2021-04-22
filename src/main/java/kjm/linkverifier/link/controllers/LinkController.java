@@ -69,12 +69,6 @@ public class LinkController {
 
         List<Comment> commentLinkList = link.getComments();
         List<Comment> commentUserList = user.getComments();
-//        if(commentLinkList == null) {
-//            commentLinkList = new ArrayList<>();
-//        }
-//        if (commentUserList == null) {
-//            commentUserList = new ArrayList<>();
-//        }
         commentLinkList.add(comment);
         commentUserList.add(comment);
         commentService.save(comment);

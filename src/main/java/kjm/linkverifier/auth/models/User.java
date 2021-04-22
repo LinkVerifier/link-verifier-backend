@@ -22,11 +22,10 @@ import java.util.*;
 @RequiredArgsConstructor
 public class User {
 
-    public User(String username, String email, String password, String profilePicture) {
+    public User(String username, String email, String password) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.profilePicture = profilePicture;
         this.roles = new HashSet<>() {{ new Role(RoleEnum.ROLE_USER); }};
     }
 
@@ -48,9 +47,6 @@ public class User {
     @Size(max = 120)
     @NonNull
     private String password;
-
-    @NonNull
-    private String profilePicture;
 
     @NonNull
     private Date creationDate;

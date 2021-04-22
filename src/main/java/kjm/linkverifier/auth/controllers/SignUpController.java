@@ -9,6 +9,7 @@ import kjm.linkverifier.auth.web.request.RegisterRequest;
 import kjm.linkverifier.auth.web.response.InformationResponse;
 import kjm.linkverifier.auth.service.SignUpService;
 import kjm.linkverifier.auth.service.UserService;
+import kjm.linkverifier.files.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
+import java.io.File;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -42,6 +44,9 @@ public class SignUpController {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    private FileService fileService;
+
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody RegisterRequest registerRequest) throws MessagingException {
         if(userService.existsByEmail(registerRequest.getEmail())) {
@@ -53,7 +58,6 @@ public class SignUpController {
         User user = new User(registerRequest.getUsername(),
                 registerRequest.getEmail(),
                 encoder.encode(registerRequest.getPassword()),
-                "https://cdn.pixabay.com/photo/2016/10/26/22/00/hamster-1772742_960_720.jpg",
                 new Date(registerRequest.getCreationDate()));
 
         Set<String> strRoles = registerRequest.getRoles();
@@ -78,6 +82,9 @@ public class SignUpController {
         }
 
         user.setRoles(rolesToSet);
+        java.io.File file = new File("profilepic.jpg");
+        kjm.linkverifier.files.model.File savedFile = fileService.store(file);
+        user.setFile(savedFile);
         userService.save(user);
         mailService.sendRegistrationEmail(signUpService.createVerificationToken(user).getToken(), user);
         return ResponseEntity.ok(new InformationResponse("User registered successfully!"));
