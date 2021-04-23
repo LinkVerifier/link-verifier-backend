@@ -2,17 +2,14 @@ package kjm.linkverifier.link.service;
 
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
-import kjm.linkverifier.link.model.Opinion;
 import kjm.linkverifier.link.model.OpinionEnum;
 import kjm.linkverifier.link.repository.LinkRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -74,9 +71,21 @@ public class LinkService {
         return (counter*100/comments.size());
     }
 
-    public List<Link> findTopByOrderByIdDesc(int from, int to) {
-        log.info("from {}, to {} ", from, to);
-        return linkRepository.findAllByOrderByLastVisitDate().subList(from, to);
+    public List<Link> findAllByOrderByCreationDateDesc() {
+        return linkRepository.findAllByOrderByCreationDateDesc();
+    }
+
+    public List<Link> findAllByOrderByCreationDateDesc(int from, int to) {
+        return linkRepository.findAllByOrderByCreationDateDesc().subList(from,to);
+    }
+
+    public List<Link> findAllByOrderByLastVisitDateDesc() {
+        return linkRepository.findAllByOrderByLastVisitDateDesc();
+    }
+
+    public List<Link> findAllByOrderByLastVisitDateDesc(int from, int to) {
+        log.info("findAllByOrderByLastVisitDateDesc {}, to {} ", from, to);
+        return linkRepository.findAllByOrderByLastVisitDateDesc().subList(from, to);
     }
 
     public List<Link> findAll() {
@@ -84,7 +93,7 @@ public class LinkService {
     }
 
     public List<Link> findAllByOrderByLastVisitDate() {
-        return linkRepository.findAllByOrderByLastVisitDate();
+        return linkRepository.findAllByOrderByLastVisitDateDesc();
     }
 
 }

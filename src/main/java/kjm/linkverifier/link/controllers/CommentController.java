@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ public class CommentController {
 
 
     @PutMapping("/{id}/like")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Comment updateUsersWhoLikeComment(@PathVariable String id,
                                              HttpServletRequest httpServletRequest) {
 
@@ -48,6 +50,7 @@ public class CommentController {
     }
 
     @PutMapping("/{id}/dislike")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Comment updateUsersWhoDislikeComment(@PathVariable String id,
                                                 HttpServletRequest httpServletRequest) {
         Comment comment = commentService.findById(id);
@@ -57,6 +60,7 @@ public class CommentController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable String id,
                                     HttpServletRequest httpServletRequest) {
         User user = CurrentUser.getCurrentUser(httpServletRequest);

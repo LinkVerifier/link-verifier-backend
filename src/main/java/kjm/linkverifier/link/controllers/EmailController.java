@@ -3,6 +3,7 @@ package kjm.linkverifier.link.controllers;
 import kjm.linkverifier.auth.repository.UserRepository;
 import kjm.linkverifier.link.requests.EmailRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ public class EmailController {
     UserRepository userRepository;
 
     @PostMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public boolean checkIfEmailExists(EmailRequest emailRequest) {
         return userRepository.existsByEmail(emailRequest.getEmail());
     }

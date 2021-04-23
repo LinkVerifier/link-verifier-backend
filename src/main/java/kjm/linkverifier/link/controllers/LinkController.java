@@ -13,6 +13,7 @@ import kjm.linkverifier.link.service.CommentService;
 import kjm.linkverifier.link.service.LinkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,10 +60,14 @@ public class LinkController {
 //                                @RequestParam(required = false) String to) {
 //        if(to != null) {
 //            if(search.equals("new")) {
+//                return linkService.
+//            } else if(search.equals("recent")) {
 //
-//            } else
+//            } else if (search.equals("most_dangerous")) {
+//
+//            }
 //        }
-//        return linkService.findAll(from, to);
+//        return linkService.findAll();
 //    }
 
     @GetMapping("/{id}")
@@ -71,6 +76,7 @@ public class LinkController {
     }
 
     @PostMapping("/{id}/comments")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Link addComment(@PathVariable("id") String id,
                            @RequestBody CommentRequest commentRequest,
                            HttpServletRequest http) {
