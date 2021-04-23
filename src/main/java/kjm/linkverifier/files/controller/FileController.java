@@ -40,7 +40,7 @@ public class FileController {
         User user = CurrentUser.getCurrentUser(httpServletRequest);
         try {
             File savedFile = fileService.store(file);
-            user.setFile(savedFile);
+            user.setProfilePicture(savedFile);
             userRepository.save(user);
             message = "Uploaded the file successfully: " + file.getOriginalFilename();
             return ResponseEntity.status(HttpStatus.OK)
