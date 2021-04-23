@@ -44,7 +44,7 @@ public class LinkController {
     public String searchLink(@Valid @RequestBody LinkRequest linkRequest) {
         String link = linkService.cleanURL(linkRequest.getLinkName());
         if (!linkService.existsByLink(link)) {
-            linkService.save(new Link(link, 0, 0, new Date(linkRequest.getDeliveryDate())));
+            linkService.save(new Link(link, 0, 0, new Date(linkRequest.getDeliveryDate()), new Date(linkRequest.getDeliveryDate())));
         }
 
         Link currentLink = linkService.findByName(link);
@@ -54,9 +54,20 @@ public class LinkController {
         return currentLink.getId();
     }
 
-    @GetMapping("/last/{num}")
-    public List<Link> showTheLatestLinks(@PathVariable String num) {
-        return linkService.findTopByOrderByIdDesc(0, Integer.parseInt(num));
+//    @GetMapping
+//    public List<Link> showLinks(@RequestParam(name = "search", required = false) String search,
+//                                @RequestParam(required = false) String to) {
+//        if(to != null) {
+//            if(search.equals("new")) {
+//
+//            } else
+//        }
+//        return linkService.findAll(from, to);
+//    }
+
+    @GetMapping("/{id}")
+    public Link getLinkDetails(@PathVariable("id") String id) {
+        return linkService.findById(id);
     }
 
     @PostMapping("/{id}/comments")
@@ -79,8 +90,4 @@ public class LinkController {
     }
 
 
-    @GetMapping("/{id}")
-    public Link getLinkDetails(@PathVariable("id") String id) {
-        return linkService.findById(id);
-    }
 }

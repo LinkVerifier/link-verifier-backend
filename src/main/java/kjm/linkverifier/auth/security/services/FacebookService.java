@@ -73,7 +73,7 @@ public class FacebookService {
                 .email(facebookUser.getEmail())
                 .username(facebookUser.getFirstName() + " " + facebookUser.getLastName())
                 .password(passwordEncoder.encode(generatePassayPassword(8)))
-                .file(file)
+                .profilePicture(file)
                 .build();
     }
 

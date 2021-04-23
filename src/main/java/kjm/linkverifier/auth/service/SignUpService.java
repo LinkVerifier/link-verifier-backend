@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -30,7 +29,6 @@ public class SignUpService {
     public User confirmSignUp(String id, String token) {
         User user = userService.findById(id);
         MailVerificationToken tokenToDelete = verificationTokenService.findByUserAndTokenAndTokenType(user, token, TokenType.SIGNUP);
-        log.info("email: {}, token to delete {}", user.getEmail(), tokenToDelete);
         user.setConfirmed(true);
         verificationTokenService.delete(tokenToDelete);
         return userService.save(user);

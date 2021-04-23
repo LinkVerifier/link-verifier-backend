@@ -30,7 +30,12 @@ public class Link {
     private int rating;
 
     @NonNull
-    private Date lastVisitDate;
+    private Date creationDate; // data utworzenia linku
+
+    @NonNull
+    private Date lastVisitDate; // data ostatniego wejscia w link
+
+    private Date lastCommentDate; // data ostatnio dodanego komentarza
 
     @DBRef
     private List<Comment> comments = new ArrayList<>();

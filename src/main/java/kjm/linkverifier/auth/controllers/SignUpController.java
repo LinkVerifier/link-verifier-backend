@@ -84,7 +84,7 @@ public class SignUpController {
         user.setRoles(rolesToSet);
         java.io.File file = new File("profilepic.jpg");
         kjm.linkverifier.files.model.File savedFile = fileService.store(file);
-        user.setFile(savedFile);
+        user.setProfilePicture(savedFile);
         userService.save(user);
         mailService.sendRegistrationEmail(signUpService.createVerificationToken(user).getToken(), user);
         return ResponseEntity.ok(new InformationResponse("User registered successfully!"));

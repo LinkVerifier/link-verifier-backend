@@ -14,5 +14,5 @@ public interface LinkRepository extends MongoRepository<Link, String> {
 
     Optional<Link> findByCommentsContaining(Comment comment);
 
-    List<Link> findTopByOrderByIdDesc();
+    List<Link> findAllByOrderByLastVisitDate();
 }

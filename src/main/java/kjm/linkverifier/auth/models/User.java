@@ -61,6 +61,6 @@ public class User {
     private List<Comment> comments = new ArrayList<>();
 
     @DBRef
-    private File file;
+    private File profilePicture;
 
 }
