@@ -40,7 +40,9 @@ public class UserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> changeUsername(HttpServletRequest httpServletRequest,
                                             @Valid @RequestBody UsernameRequest usernameRequest) {
+        log.info("username new {}", usernameRequest.getUsername());
         User user = CurrentUser.getCurrentUser(httpServletRequest);
+        log.info("username old {}", user.getUsername());
         user.setUsername(usernameRequest.getUsername());
         userRepository.save(user);
         return new ResponseEntity<>("Username changed.", HttpStatus.OK);
@@ -55,7 +57,7 @@ public class UserController {
         if(!passwordRequest.getNewPassword().equals(passwordRequest.getNewRepeatedPassword())) {
             throw new PasswordsNotMatchException("Passwords do not match.");
         }
-        if(user.getPassword().equals(passwordEncoder.encode(passwordRequest.getOldPassword()))) {
+        if(passwordEncoder.matches(passwordRequest.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
         }
         userRepository.save(user);
