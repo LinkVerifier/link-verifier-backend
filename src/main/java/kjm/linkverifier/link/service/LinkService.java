@@ -59,6 +59,9 @@ public class LinkService {
     }
 
     public int calculateRatings(List<Comment> comments) {
+        if(comments.size() == 0) {
+            return 0;
+        }
         int counter = 0;
         for (Comment comm : comments) {
             if(comm.getOpinion().getName().equals(OpinionEnum.RELIABLE) ||
@@ -92,8 +95,12 @@ public class LinkService {
         return linkRepository.findAll();
     }
 
-    public List<Link> findAllByOrderByLastVisitDate() {
-        return linkRepository.findAllByOrderByLastVisitDateDesc();
+    public List<Link> findAllByOrderByRating() {
+        return linkRepository.findAllByOrderByRating();
+    }
+
+    public List<Link> findAllByOrderByRating(int from, int to) {
+        return linkRepository.findAllByOrderByRating().subList(from, to);
     }
 
 }

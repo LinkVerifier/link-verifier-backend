@@ -49,26 +49,42 @@ public class LinkController {
         }
 
         Link currentLink = linkService.findByName(link);
+        int rating = linkService.calculateRatings(currentLink.getComments());
+        currentLink.setRating(rating);
         currentLink.setLastVisitDate(new Date(linkRequest.getDeliveryDate()));
         currentLink.setViews(currentLink.getViews()+1);
         linkService.save(currentLink);
         return currentLink.getId();
     }
 
-//    @GetMapping
-//    public List<Link> showLinks(@RequestParam(name = "search", required = false) String search,
-//                                @RequestParam(required = false) String to) {
-//        if(to != null) {
-//            if(search.equals("new")) {
-//                return linkService.
-//            } else if(search.equals("recent")) {
-//
-//            } else if (search.equals("most_dangerous")) {
-//
-//            }
-//        }
-//        return linkService.findAll();
-//    }
+    @GetMapping
+    public List<Link> showLinks(@RequestParam(required = false) String search,
+                                @RequestParam(required = false) String to) {
+        if(to != null) {
+            int toInt = Integer.parseInt(to);
+            switch (search) {
+                case "new":
+                    return linkService.findAllByOrderByCreationDateDesc(0, toInt);
+                case "recent":
+                    return linkService.findAllByOrderByLastVisitDateDesc(0, toInt);
+                case "most_dangerous":
+                    return linkService.findAllByOrderByRating(0, toInt);
+                default:
+                    return linkService.findAll();
+            }
+        } else {
+            switch (search) {
+                case "new":
+                    return linkService.findAllByOrderByCreationDateDesc();
+                case "recent":
+                    return linkService.findAllByOrderByLastVisitDateDesc();
+                case "most_dangerous":
+                    return linkService.findAllByOrderByRating();
+                default:
+                    return linkService.findAll();
+            }
+        }
+    }
 
     @GetMapping("/{id}")
     public Link getLinkDetails(@PathVariable("id") String id) {
@@ -92,6 +108,8 @@ public class LinkController {
         userService.save(user);
         link.setComments(commentRepository.findAllByLinkIdOrderByCreationDateDesc(id));
         user.setComments(commentUserList);
+        int rating = linkService.calculateRatings(link.getComments());
+        link.setRating(rating);
         return linkService.save(link);
     }
 
