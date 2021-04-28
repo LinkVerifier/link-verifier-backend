@@ -95,12 +95,20 @@ public class LinkService {
         return linkRepository.findAll();
     }
 
-    public List<Link> findAllByOrderByRating() {
-        return linkRepository.findAllByOrderByRating();
+    public List<Link> findAllByOrderByRatingAsc() {
+        return linkRepository.findAllByOrderByRatingAsc();
     }
 
-    public List<Link> findAllByOrderByRating(int from, int to) {
-        return linkRepository.findAllByOrderByRating().subList(from, to);
+    public List<Link> findAllByOrderByRatingAsc(int from, int to) {
+        return linkRepository.findAllByOrderByRatingAsc().subList(from, to);
+    }
+
+    public List<Link> findAllByOrderByViewsDesc() {
+        return linkRepository.findAllByOrderByViewsDesc();
+    }
+
+    public List<Link> findAllByOrderByViewsDesc(int from, int to) {
+        return linkRepository.findAllByOrderByViewsDesc().subList(from, to);
     }
 
 }

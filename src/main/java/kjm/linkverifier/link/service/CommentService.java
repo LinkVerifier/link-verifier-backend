@@ -127,4 +127,12 @@ public class CommentService {
     public List<Comment> findAllByOrderByCreationDateDesc() {
         return commentRepository.findAllByOrderByCreationDateDesc();
     }
+
+    public List<Comment> findAllByOrderByCreationDateDesc(int from, int to) {
+        return commentRepository.findAllByOrderByCreationDateDesc().subList(from, to);
+    }
+
+    public List<Comment> findAll() {
+        return commentRepository.findAll();
+    }
 }

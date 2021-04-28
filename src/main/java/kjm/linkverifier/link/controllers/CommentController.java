@@ -72,8 +72,16 @@ public class CommentController {
     }
 
     @GetMapping
-    public List<Comment> getAllComments() {
-        return commentService.findAllByOrderByCreationDateDesc();
+    public List<Comment> getAll(@RequestParam(required = false) String search,
+                                @RequestParam(required = false) String to) {
+
+        if(search.equals("date")) {
+            if(to != null) {
+                return commentService.findAllByOrderByCreationDateDesc(0, Integer.parseInt(to));
+            }
+            return commentService.findAllByOrderByCreationDateDesc();
+        }
+        return commentService.findAll();
     }
 
 

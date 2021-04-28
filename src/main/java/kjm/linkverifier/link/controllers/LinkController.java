@@ -65,10 +65,10 @@ public class LinkController {
             switch (search) {
                 case "new":
                     return linkService.findAllByOrderByCreationDateDesc(0, toInt);
-                case "recent":
-                    return linkService.findAllByOrderByLastVisitDateDesc(0, toInt);
+                case "most_visited":
+                    return linkService.findAllByOrderByViewsDesc(0, toInt);
                 case "most_dangerous":
-                    return linkService.findAllByOrderByRating(0, toInt);
+                    return linkService.findAllByOrderByRatingAsc(0, toInt);
                 default:
                     return linkService.findAll();
             }
@@ -76,10 +76,10 @@ public class LinkController {
             switch (search) {
                 case "new":
                     return linkService.findAllByOrderByCreationDateDesc();
-                case "recent":
-                    return linkService.findAllByOrderByLastVisitDateDesc();
+                case "most_visited":
+                    return linkService.findAllByOrderByViewsDesc();
                 case "most_dangerous":
-                    return linkService.findAllByOrderByRating();
+                    return linkService.findAllByOrderByRatingAsc();
                 default:
                     return linkService.findAll();
             }
