@@ -1,5 +1,7 @@
 package kjm.linkverifier.auth.service;
 
+import kjm.linkverifier.auth.exceptions.UserIsNotFoundException;
+import kjm.linkverifier.auth.exceptions.WrongEmailException;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.UserRepository;
 import kjm.linkverifier.link.model.Comment;
@@ -18,12 +20,12 @@ public class UserService {
 
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Error: User is not found"));
+                .orElseThrow(WrongEmailException::new);
     }
 
     public User findById(String id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Error: User is not found"));
+                .orElseThrow(() -> new UserIsNotFoundException(id));
     }
 
     public User save(User user) {

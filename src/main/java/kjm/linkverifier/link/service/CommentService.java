@@ -2,17 +2,21 @@ package kjm.linkverifier.link.service;
 
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.UserRepository;
+import kjm.linkverifier.auth.service.CurrentUser;
+import kjm.linkverifier.auth.service.UserService;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.model.Opinion;
 import kjm.linkverifier.link.model.OpinionEnum;
 import kjm.linkverifier.link.repository.CommentRepository;
+import kjm.linkverifier.link.repository.LinkRepository;
 import kjm.linkverifier.link.repository.OpinionRepository;
 import kjm.linkverifier.link.requests.CommentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +30,10 @@ public class CommentService {
     CommentRepository commentRepository;
 
     @Autowired
-    UserRepository userRepository;
+    LinkService linkService;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     OpinionRepository opinionRepository;
@@ -82,6 +89,25 @@ public class CommentService {
         return new Comment(commentRequest.getComment(), user.getId(), link.getId(), date, opinion);
     }
 
+    // musi zwracać KOMENTARZ
+    public Link addComment(String id, HttpServletRequest http, CommentRequest commentRequest) {
+        Link link = linkService.findById(id);
+        User user = CurrentUser.getCurrentUser(http);
+
+        Comment comment = getCommentFromCommentRequest(link,user,commentRequest);
+        List<Comment> commentLinkList = link.getComments();
+        List<Comment> commentUserList = user.getComments();
+        commentLinkList.add(comment);
+        commentUserList.add(comment);
+        save(comment);
+        link.setComments(commentRepository.findAllByLinkIdOrderByCreationDateDesc(id));
+        user.setComments(commentUserList);
+        userService.save(user);
+        int rating = linkService.calculateRatings(link.getComments());
+        link.setRating(rating);
+        return linkService.save(link);
+    }
+
     public Comment likeUnlikeComment(Comment comment, User user) {
         Set<String> usersWhoLikeSet = comment.getUsersWhoLike();
         Set<String> usersWhoDislikeSet = comment.getUsersWhoDislike();
@@ -129,6 +155,9 @@ public class CommentService {
     }
 
     public List<Comment> findAllByOrderByCreationDateDesc(int from, int to) {
+        if(commentRepository.findAllByOrderByCreationDateDesc().size()<to) {
+            return commentRepository.findAllByOrderByCreationDateDesc();
+        }
         return commentRepository.findAllByOrderByCreationDateDesc().subList(from, to);
     }
 

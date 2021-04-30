@@ -58,9 +58,9 @@ public class SignInController {
     @PostMapping("/signin")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         User user = userService.findByEmail(loginRequest.getEmail());
-//        if(!user.isConfirmed()) {
-//            throw new RuntimeException("Error: Account is not activated.");
-//        }
+        if(!user.isConfirmed()) {
+            throw new RuntimeException("Error: Account is not activated.");
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 

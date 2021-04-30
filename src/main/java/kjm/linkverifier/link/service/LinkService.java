@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,18 +34,10 @@ public class LinkService {
                 .orElseThrow(() -> new RuntimeException("Error: Link is not found"));
     }
 
-    public Link updateLikesInComment(Comment comment, Comment newComment) {
-        Link link = linkRepository.findByCommentsContaining(comment)
-                .orElseThrow(() -> new RuntimeException("Error: Link is not found"));
-
-        List<Comment> comments = link.getComments();
-        if(comments == null) {
-            comments = new ArrayList<>();
-        }
-        comments.remove(comment);
-        comments.add(newComment);
-        link.setComments(comments);
-        return linkRepository.save(link);
+    public void addViews(String id) {
+        Link link = findById(id);
+        link.setViews(link.getViews() + 1);
+        linkRepository.save(link);
     }
 
     public String cleanURL(String url) {
@@ -64,13 +55,16 @@ public class LinkService {
         }
         int counter = 0;
         for (Comment comm : comments) {
-            if(comm.getOpinion().getName().equals(OpinionEnum.RELIABLE) ||
-                    comm.getOpinion().getName().equals(OpinionEnum.SAFE) ||
-                    comm.getOpinion().getName().equals(OpinionEnum.NEUTRAL)) {
+            if(comm.getOpinion().getName().equals(OpinionEnum.FRAUD) ||
+                    comm.getOpinion().getName().equals(OpinionEnum.INDECENT_CONTENT) ||
+                    comm.getOpinion().getName().equals(OpinionEnum.FAKE_NEWS) ||
+                    comm.getOpinion().getName().equals(OpinionEnum.VIRUS)) {
                 counter++;
             }
         }
-
+        log.info("size {}",comments.size());
+        comments.removeIf(s -> s.getOpinion().getName().equals(OpinionEnum.NEUTRAL));
+        log.info("size2 {}", comments.size());
         return (counter*100/comments.size());
     }
 
@@ -79,16 +73,10 @@ public class LinkService {
     }
 
     public List<Link> findAllByOrderByCreationDateDesc(int from, int to) {
+        if(linkRepository.findAllByOrderByCreationDateDesc().size()<to) {
+            return linkRepository.findAllByOrderByCreationDateDesc();
+        }
         return linkRepository.findAllByOrderByCreationDateDesc().subList(from,to);
-    }
-
-    public List<Link> findAllByOrderByLastVisitDateDesc() {
-        return linkRepository.findAllByOrderByLastVisitDateDesc();
-    }
-
-    public List<Link> findAllByOrderByLastVisitDateDesc(int from, int to) {
-        log.info("findAllByOrderByLastVisitDateDesc {}, to {} ", from, to);
-        return linkRepository.findAllByOrderByLastVisitDateDesc().subList(from, to);
     }
 
     public List<Link> findAll() {
@@ -100,6 +88,9 @@ public class LinkService {
     }
 
     public List<Link> findAllByOrderByRatingAsc(int from, int to) {
+        if(linkRepository.findAllByOrderByRatingAsc().size()<to) {
+            return linkRepository.findAllByOrderByRatingAsc();
+        }
         return linkRepository.findAllByOrderByRatingAsc().subList(from, to);
     }
 
@@ -108,6 +99,9 @@ public class LinkService {
     }
 
     public List<Link> findAllByOrderByViewsDesc(int from, int to) {
+        if(linkRepository.findAllByOrderByViewsDesc().size() < to) {
+            return linkRepository.findAllByOrderByViewsDesc();
+        }
         return linkRepository.findAllByOrderByViewsDesc().subList(from, to);
     }
 

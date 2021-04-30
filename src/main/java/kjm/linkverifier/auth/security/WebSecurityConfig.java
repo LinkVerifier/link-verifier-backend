@@ -67,12 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/links/**").permitAll()
                 .antMatchers("/facebook/signin").permitAll()
                 .antMatchers("/users/**").permitAll()
-                .anyRequest().authenticated()
-                .and().logout()
-                .logoutUrl("/api/auth/logout")
-                .deleteCookies("JSESSIONID")
-                .clearAuthentication(true)
-                .permitAll();
+                .anyRequest().authenticated();
 
 
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);

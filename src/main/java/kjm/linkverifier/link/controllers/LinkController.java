@@ -13,6 +13,7 @@ import kjm.linkverifier.link.service.CommentService;
 import kjm.linkverifier.link.service.LinkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -91,27 +92,29 @@ public class LinkController {
         return linkService.findById(id);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> addViews(@PathVariable("id") String id) {
+        linkService.addViews(id);
+        return ResponseEntity.ok("resource address updated");
+    }
+
     @PostMapping("/{id}/comments")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Link addComment(@PathVariable("id") String id,
                            @RequestBody CommentRequest commentRequest,
                            HttpServletRequest http) {
-        Link link = linkService.findById(id);
-        User user = CurrentUser.getCurrentUser(http);
-        Comment comment = commentService.getCommentFromCommentRequest(link, user, commentRequest);
+        return commentService.addComment(id, http, commentRequest);
 
-        List<Comment> commentLinkList = link.getComments();
-        List<Comment> commentUserList = user.getComments();
-        commentLinkList.add(comment);
-        commentUserList.add(comment);
-        commentService.save(comment);
-        userService.save(user);
-        link.setComments(commentRepository.findAllByLinkIdOrderByCreationDateDesc(id));
-        user.setComments(commentUserList);
-        int rating = linkService.calculateRatings(link.getComments());
-        link.setRating(rating);
-        return linkService.save(link);
+//        List<Comment> commentLinkList = link.getComments();
+//        List<Comment> commentUserList = user.getComments();
+//        commentLinkList.add(comment);
+//        commentUserList.add(comment);
+//        commentService.save(comment);
+//        userService.save(user);
+//        link.setComments(commentRepository.findAllByLinkIdOrderByCreationDateDesc(id));
+//        user.setComments(commentUserList);
+//        int rating = linkService.calculateRatings(link.getComments());
+//        link.setRating(rating);
+//        return linkService.save(link);
     }
-
-
 }
