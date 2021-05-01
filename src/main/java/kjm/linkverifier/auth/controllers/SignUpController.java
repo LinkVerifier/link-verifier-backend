@@ -1,5 +1,6 @@
 package kjm.linkverifier.auth.controllers;
 
+import kjm.linkverifier.auth.exceptions.RoleNotFoundException;
 import kjm.linkverifier.auth.mail.MailService;
 import kjm.linkverifier.auth.models.Role;
 import kjm.linkverifier.auth.models.RoleEnum;
@@ -65,17 +66,17 @@ public class SignUpController {
 
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(RoleEnum.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    .orElseThrow(() -> new RoleNotFoundException("Error: Role is not found."));
             rolesToSet.add(userRole);
         } else {
             strRoles.forEach(role -> {
                 if(role.equals("admin")) {
                     Role adminRole = roleRepository.findByName(RoleEnum.ROLE_ADMIN)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                            .orElseThrow(() -> new RoleNotFoundException("Error: Role is not found."));
                     rolesToSet.add(adminRole);
                 } else {
                     Role userRole = roleRepository.findByName(RoleEnum.ROLE_USER)
-                            .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                            .orElseThrow(() -> new RoleNotFoundException("Error: Role is not found."));
                     rolesToSet.add(userRole);
                 }
             });

@@ -4,6 +4,7 @@ import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.UserRepository;
 import kjm.linkverifier.auth.service.CurrentUser;
 import kjm.linkverifier.auth.service.UserService;
+import kjm.linkverifier.link.exceptions.UserCommentExistsException;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.model.Opinion;
@@ -93,16 +94,20 @@ public class CommentService {
     public Link addComment(String id, HttpServletRequest http, CommentRequest commentRequest) {
         Link link = linkService.findById(id);
         User user = CurrentUser.getCurrentUser(http);
+        Comment comment = getCommentFromCommentRequest(link, user, commentRequest);
+        //return commentService.addComment(id, http, commentRequest);
 
-        Comment comment = getCommentFromCommentRequest(link,user,commentRequest);
         List<Comment> commentLinkList = link.getComments();
         List<Comment> commentUserList = user.getComments();
+        if (commentLinkList.stream().anyMatch(c -> c.getUserId().equals(user.getId()))) {
+            throw new UserCommentExistsException("User " + user.getEmail() + " can not add more than one comment");
+        }
         commentLinkList.add(comment);
         commentUserList.add(comment);
         save(comment);
+        userService.save(user);
         link.setComments(commentRepository.findAllByLinkIdOrderByCreationDateDesc(id));
         user.setComments(commentUserList);
-        userService.save(user);
         int rating = linkService.calculateRatings(link.getComments());
         link.setRating(rating);
         return linkService.save(link);

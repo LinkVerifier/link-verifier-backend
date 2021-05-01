@@ -3,6 +3,7 @@ package kjm.linkverifier.link.controllers;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.service.CurrentUser;
 import kjm.linkverifier.auth.service.UserService;
+import kjm.linkverifier.link.exceptions.UserCommentExistsException;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.repository.CommentRepository;
@@ -103,18 +104,25 @@ public class LinkController {
     public Link addComment(@PathVariable("id") String id,
                            @RequestBody CommentRequest commentRequest,
                            HttpServletRequest http) {
-        return commentService.addComment(id, http, commentRequest);
+        Link link = linkService.findById(id);
+        User user = CurrentUser.getCurrentUser(http);
+        Comment comment = commentService.getCommentFromCommentRequest(link, user, commentRequest);
+        //return commentService.addComment(id, http, commentRequest);
 
-//        List<Comment> commentLinkList = link.getComments();
-//        List<Comment> commentUserList = user.getComments();
-//        commentLinkList.add(comment);
-//        commentUserList.add(comment);
-//        commentService.save(comment);
-//        userService.save(user);
-//        link.setComments(commentRepository.findAllByLinkIdOrderByCreationDateDesc(id));
-//        user.setComments(commentUserList);
-//        int rating = linkService.calculateRatings(link.getComments());
-//        link.setRating(rating);
-//        return linkService.save(link);
+        List<Comment> commentLinkList = link.getComments();
+        List<Comment> commentUserList = user.getComments();
+        log.info(commentLinkList.size() + " XD");
+        if (!commentLinkList.isEmpty() && commentLinkList.stream().anyMatch(c -> c.getUserId().equals(user.getId()))) {
+            throw new UserCommentExistsException("User " + user.getEmail() + " can not add more than one comment");
+        }
+        commentLinkList.add(comment);
+        commentUserList.add(comment);
+        commentService.save(comment);
+        userService.save(user);
+        link.setComments(commentRepository.findAllByLinkIdOrderByCreationDateDesc(id));
+        user.setComments(commentUserList);
+        int rating = linkService.calculateRatings(link.getComments());
+        link.setRating(rating);
+        return linkService.save(link);
     }
 }

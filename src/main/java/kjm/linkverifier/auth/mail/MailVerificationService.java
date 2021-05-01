@@ -1,5 +1,6 @@
 package kjm.linkverifier.auth.mail;
 
+import kjm.linkverifier.auth.mail.exceptions.TokenException;
 import kjm.linkverifier.auth.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,9 +15,9 @@ public class MailVerificationService {
 
     public MailVerificationToken findByUserAndTokenAndTokenType(User user, String token, TokenType tokenType) {
         MailVerificationToken mailToken = tokenRepository.findByUserAndTokenAndTokenType(user, token, tokenType)
-                .orElseThrow(() -> new RuntimeException("Error: Token is not found"));
+                .orElseThrow(() -> new TokenException("Error: Token is not found"));
         if (mailToken.getExpiryDate().before(new Date())) {
-            throw new RuntimeException("Token expired");
+            throw new TokenException("Token expired");
         }
         return mailToken;
     }

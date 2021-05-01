@@ -1,5 +1,6 @@
 package kjm.linkverifier.auth.controllers;
 
+import kjm.linkverifier.auth.exceptions.NotActivatedAccountException;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.RoleRepository;
 import kjm.linkverifier.auth.web.request.FacebookLoginRequest;
@@ -57,9 +58,16 @@ public class SignInController {
 
     @PostMapping("/signin")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
+        if(!userService.existsByEmail(loginRequest.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new InformationResponse("Error: Wrong email"));
+        }
         User user = userService.findByEmail(loginRequest.getEmail());
         if(!user.isConfirmed()) {
-            throw new RuntimeException("Error: Account is not activated.");
+            return ResponseEntity
+                    .badRequest()
+                    .body(new InformationResponse("Error: Account is not confirmed"));
         }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));

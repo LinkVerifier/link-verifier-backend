@@ -29,6 +29,12 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private LinkService linkService;
+
     @GetMapping("/{id}")
     public Comment getComment(@PathVariable String id) {
         return commentService.findById(id);
@@ -43,8 +49,6 @@ public class CommentController {
         Comment comment = commentService.findById(id);
         User user = CurrentUser.getCurrentUser(httpServletRequest);
         Comment newComment = commentService.likeUnlikeComment(comment, user);
-//        linkService.updateLikesInComment(comment, newComment);
-//        userService.updateLikesInComment(comment, newComment);
 
         return commentService.save(newComment);
     }
@@ -65,9 +69,13 @@ public class CommentController {
                                     HttpServletRequest httpServletRequest) {
         User user = CurrentUser.getCurrentUser(httpServletRequest);
         Comment comment = commentService.findById(id);
-        if(user.getComments().contains(comment)) {
-            commentService.deleteById(id);
-        }
+        Link link = linkService.findLinkByCommentsLike(comment);
+        link.getComments().remove(comment);
+        linkService.save(link);
+        user.getComments().remove(comment);
+        user.setComments(user.getComments());
+        userService.save(user);
+        commentService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

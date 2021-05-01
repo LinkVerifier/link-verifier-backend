@@ -1,5 +1,6 @@
 package kjm.linkverifier.link.service;
 
+import kjm.linkverifier.link.exceptions.LinkNotFoundException;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.model.OpinionEnum;
@@ -66,6 +67,11 @@ public class LinkService {
         comments.removeIf(s -> s.getOpinion().getName().equals(OpinionEnum.NEUTRAL));
         log.info("size2 {}", comments.size());
         return (counter*100/comments.size());
+    }
+
+    public Link findLinkByCommentsLike(Comment comment) {
+        return linkRepository.findLinkByCommentsLike(comment)
+                .orElseThrow(LinkNotFoundException::new);
     }
 
     public List<Link> findAllByOrderByCreationDateDesc() {

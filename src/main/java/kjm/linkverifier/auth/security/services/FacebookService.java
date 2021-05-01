@@ -1,6 +1,7 @@
 package kjm.linkverifier.auth.security.services;
 
 import kjm.linkverifier.auth.client.FacebookClient;
+import kjm.linkverifier.auth.exceptions.RoleNotFoundException;
 import kjm.linkverifier.auth.models.Role;
 import kjm.linkverifier.auth.models.RoleEnum;
 import kjm.linkverifier.auth.models.User;
@@ -86,7 +87,7 @@ public class FacebookService {
 
         Set<Role> rolesToSet = new HashSet<>();
         Role userFacebookRole = roleRepository.findByName(RoleEnum.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Error: Role is not found"));
+                .orElseThrow(() -> new RoleNotFoundException("Error: Role is not found"));
 
         rolesToSet.add(userFacebookRole);
         user.setCreationDate(new Date(creationDate));
