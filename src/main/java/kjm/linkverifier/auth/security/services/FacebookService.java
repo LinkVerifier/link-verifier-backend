@@ -49,7 +49,7 @@ public class FacebookService {
         var facebookUser = facebookClient.getUser(fbAccessToken);
         User user;
         if(!userRepository.existsById(facebookUser.getId())) {
-            user = registerFacebookUser(convertUserToFacebookUser(facebookUser), creationDate);
+            user = registerFacebookUser(convertUserToFacebookUser(facebookUser, creationDate));
         } else {
             user = userRepository.findById(facebookUser.getId()).get();
         }
@@ -57,7 +57,7 @@ public class FacebookService {
         return user;
     }
 
-    public User convertUserToFacebookUser(FacebookUser facebookUser) {
+    public User convertUserToFacebookUser(FacebookUser facebookUser, Long creationDate) {
         String url = facebookUser.getPicture().getData().getUrl();
         log.info("url {}", url);
         String extension = url.substring(url.lastIndexOf("."));
@@ -74,11 +74,12 @@ public class FacebookService {
                 .email(facebookUser.getEmail())
                 .username(facebookUser.getFirstName() + " " + facebookUser.getLastName())
                 .password(passwordEncoder.encode(generatePassayPassword(8)))
+                .creationDate(new Date(creationDate))
                 .profilePicture(file)
                 .build();
     }
 
-    public User registerFacebookUser(User user, Long creationDate) {
+    public User registerFacebookUser(User user) {
         log.info("registering facebook user {}", user.getEmail());
 
          if(userRepository.existsByEmail(user.getEmail())) {
@@ -90,7 +91,6 @@ public class FacebookService {
                 .orElseThrow(() -> new RoleNotFoundException("Error: Role is not found"));
 
         rolesToSet.add(userFacebookRole);
-        user.setCreationDate(new Date(creationDate));
         user.setRoles(rolesToSet);
         return userRepository.save(user);
     }
