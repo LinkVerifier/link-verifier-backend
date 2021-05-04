@@ -7,12 +7,14 @@ import kjm.linkverifier.auth.models.RoleEnum;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.RoleRepository;
 import kjm.linkverifier.auth.web.request.RegisterRequest;
+import kjm.linkverifier.auth.web.response.ExceptionResponse;
 import kjm.linkverifier.auth.web.response.InformationResponse;
 import kjm.linkverifier.auth.service.SignUpService;
 import kjm.linkverifier.auth.service.UserService;
 import kjm.linkverifier.files.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -53,7 +55,12 @@ public class SignUpController {
         if(userService.existsByEmail(registerRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new InformationResponse("Error: Email is already in use!"));
+                    .body(new InformationResponse("To konto już istnieje"));
+        }
+        if(!registerRequest.getPassword().equals(registerRequest.getPasswordConfirmation())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new InformationResponse("Hasła nie są identyczne"));
         }
 
         User user = new User(registerRequest.getUsername(),

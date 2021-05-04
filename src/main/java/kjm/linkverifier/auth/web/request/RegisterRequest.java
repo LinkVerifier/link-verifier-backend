@@ -21,8 +21,12 @@ public class RegisterRequest {
     private Set<String> roles;
 
     @NotBlank
-    @Size(min = 6, max = 40)
+    @Size(min = 6, max = 100)
     private String password;
+
+    @NotBlank
+    @Size(min = 6, max = 100)
+    private String passwordConfirmation;
 
     @NotBlank
     private Long creationDate;

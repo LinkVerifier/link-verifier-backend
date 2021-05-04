@@ -6,6 +6,8 @@ import kjm.linkverifier.auth.repository.UserRepository;
 import kjm.linkverifier.auth.service.CurrentUser;
 import kjm.linkverifier.auth.web.request.PasswordRequest;
 import kjm.linkverifier.auth.web.request.UsernameRequest;
+import kjm.linkverifier.auth.web.response.ExceptionResponse;
+import kjm.linkverifier.auth.web.response.InformationResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,12 +42,10 @@ public class UserController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> changeUsername(HttpServletRequest httpServletRequest,
                                             @Valid @RequestBody UsernameRequest usernameRequest) {
-        log.info("username new {}", usernameRequest.getUsername());
         User user = CurrentUser.getCurrentUser(httpServletRequest);
-        log.info("username old {}", user.getUsername());
         user.setUsername(usernameRequest.getUsername());
         userRepository.save(user);
-        return new ResponseEntity<>("Username changed.", HttpStatus.OK);
+        return new ResponseEntity<>(new InformationResponse("Nazwa użytkownika zmieniona"), HttpStatus.OK);
     }
 
     @PutMapping("/change_password")
@@ -55,13 +55,14 @@ public class UserController {
 
         User user = CurrentUser.getCurrentUser(httpServletRequest);
         if(!passwordRequest.getNewPassword().equals(passwordRequest.getNewRepeatedPassword())) {
-            throw new PasswordsNotMatchException("Passwords do not match.");
+            return new ResponseEntity<>(new ExceptionResponse("Hasła nie są takie same"), HttpStatus.OK);
+            //throw new PasswordsNotMatchException("Passwords do not match.");
         }
         if(passwordEncoder.matches(passwordRequest.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
         }
         userRepository.save(user);
-        return new ResponseEntity<>("Password has been changed.", HttpStatus.OK);
+        return new ResponseEntity<>("Hasło zmienione.", HttpStatus.OK);
     }
 
     @GetMapping("/get_user")
