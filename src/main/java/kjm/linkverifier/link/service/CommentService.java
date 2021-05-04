@@ -166,6 +166,10 @@ public class CommentService {
         return commentRepository.findAllByOrderByCreationDateDesc().subList(from, to);
     }
 
+    public List<Comment> findAllByLinkIdOrderByCreationDateDesc(String id) {
+        return commentRepository.findAllByLinkIdOrderByCreationDateDesc(id);
+    }
+
     public List<Comment> findAll() {
         return commentRepository.findAll();
     }

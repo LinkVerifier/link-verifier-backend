@@ -1,8 +1,6 @@
 package kjm.linkverifier.auth.controllers;
 
-import kjm.linkverifier.auth.exceptions.NotActivatedAccountException;
 import kjm.linkverifier.auth.models.User;
-import kjm.linkverifier.auth.repository.RoleRepository;
 import kjm.linkverifier.auth.web.request.FacebookLoginRequest;
 import kjm.linkverifier.auth.security.jwtToken.JwtUtils;
 import kjm.linkverifier.auth.security.services.FacebookService;
@@ -10,7 +8,6 @@ import kjm.linkverifier.auth.security.services.UserDetailsImpl;
 import kjm.linkverifier.auth.web.response.TokenResponse;
 import kjm.linkverifier.auth.web.request.LoginRequest;
 import kjm.linkverifier.auth.web.response.InformationResponse;
-import kjm.linkverifier.auth.service.SignUpService;
 import kjm.linkverifier.auth.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +20,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,26 +30,20 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 public class SignInController {
 
-    private PasswordEncoder encoder;
-    private RoleRepository roleRepository;
-    private UserService userService;
-    private JwtUtils jwtUtils;
-    private AuthenticationManager authenticationManager;
-    private FacebookService facebookService;
-    private SignUpService signUpService;
+    private final UserService userService;
+    private final JwtUtils jwtUtils;
+    private final AuthenticationManager authenticationManager;
+    private final FacebookService facebookService;
 
     @Autowired
-    public SignInController(PasswordEncoder encoder, RoleRepository roleRepository,
-                            UserService userService, JwtUtils jwtUtils,
-                            AuthenticationManager authenticationManager, FacebookService facebookService,
-                            SignUpService signUpService) {
-        this.encoder = encoder;
-        this.roleRepository = roleRepository;
+    public SignInController(UserService userService,
+                            JwtUtils jwtUtils,
+                            AuthenticationManager authenticationManager,
+                            FacebookService facebookService) {
         this.userService = userService;
         this.jwtUtils = jwtUtils;
         this.authenticationManager = authenticationManager;
         this.facebookService = facebookService;
-        this.signUpService = signUpService;
     }
 
     @PostMapping("/signin")

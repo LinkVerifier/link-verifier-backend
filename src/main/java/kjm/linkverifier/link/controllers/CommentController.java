@@ -3,6 +3,8 @@ package kjm.linkverifier.link.controllers;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.service.CurrentUser;
 import kjm.linkverifier.auth.service.UserService;
+import kjm.linkverifier.files.response.ResponseMessage;
+import kjm.linkverifier.link.exceptions.UserCommentExistsException;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.repository.CommentRepository;
@@ -18,12 +20,13 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("/comments")
+@RequestMapping("/")
 public class CommentController {
 
     @Autowired
@@ -41,7 +44,7 @@ public class CommentController {
     }
 
 
-    @PutMapping("/{id}/like")
+    @PutMapping("comments/{id}/like")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Comment updateUsersWhoLikeComment(@PathVariable String id,
                                              HttpServletRequest httpServletRequest) {
@@ -53,7 +56,7 @@ public class CommentController {
         return commentService.save(newComment);
     }
 
-    @PutMapping("/{id}/dislike")
+    @PutMapping("comments/{id}/dislike")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Comment updateUsersWhoDislikeComment(@PathVariable String id,
                                                 HttpServletRequest httpServletRequest) {
@@ -63,7 +66,7 @@ public class CommentController {
         return commentService.save(newComment);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("comments/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable String id,
                                     HttpServletRequest httpServletRequest) {
@@ -71,6 +74,7 @@ public class CommentController {
         Comment comment = commentService.findById(id);
         Link link = linkService.findLinkByCommentsLike(comment);
         link.getComments().remove(comment);
+        link.setRating(linkService.calculateRatings(link.getComments()));
         linkService.save(link);
         user.getComments().remove(comment);
         user.setComments(user.getComments());
@@ -79,7 +83,7 @@ public class CommentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("comments")
     public List<Comment> getAll(@RequestParam(required = false) String search,
                                 @RequestParam(required = false) String to) {
 
@@ -91,6 +95,35 @@ public class CommentController {
         }
         return commentService.findAll();
     }
+
+    @PostMapping("links/{id}/comments")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public Link addComment(@PathVariable("id") String id,
+                           @RequestBody CommentRequest commentRequest,
+                           HttpServletRequest http) {
+        Link link = linkService.findById(id);
+        User user = CurrentUser.getCurrentUser(http);
+        Comment comment = commentService.getCommentFromCommentRequest(link, user, commentRequest);
+        log.info("linkID {}", link.getId());
+        log.info("userID {}", user.getId());
+        log.info("commentID {}", link.getId());
+        List<Comment> commentLinkList = link.getComments();
+        List<Comment> commentUserList = user.getComments();
+        if (!commentLinkList.isEmpty() && commentLinkList.stream().anyMatch(c -> c.getUserId().equals(user.getId()))) {
+            throw new UserCommentExistsException("User " + user.getEmail() + " can not add more than one coment");
+        }
+        commentLinkList.add(comment);
+        commentUserList.add(comment);
+        int rating = linkService.calculateRatings(link.getComments());
+        link.setRating(rating);
+        link.setLastCommentDate(new Date(commentRequest.getDate()));
+        commentService.save(comment);
+        user.setComments(commentUserList);
+        userService.save(user);
+        link.setComments(commentService.findAllByLinkIdOrderByCreationDateDesc(id));
+        return linkService.save(link);
+    }
+
 
 
 }

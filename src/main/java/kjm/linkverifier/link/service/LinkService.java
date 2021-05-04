@@ -63,9 +63,10 @@ public class LinkService {
                 counter++;
             }
         }
-        log.info("size {}",comments.size());
         comments.removeIf(s -> s.getOpinion().getName().equals(OpinionEnum.NEUTRAL));
-        log.info("size2 {}", comments.size());
+        if(comments.size() == 0) {
+            return 0;
+        }
         return (counter*100/comments.size());
     }
 
