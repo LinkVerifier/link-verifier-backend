@@ -3,12 +3,14 @@ package kjm.linkverifier.link.controllers;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.service.CurrentUser;
 import kjm.linkverifier.auth.service.UserService;
+import kjm.linkverifier.auth.web.response.InformationResponse;
 import kjm.linkverifier.files.response.ResponseMessage;
 import kjm.linkverifier.link.exceptions.UserCommentExistsException;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.repository.CommentRepository;
 import kjm.linkverifier.link.requests.CommentRequest;
+import kjm.linkverifier.link.response.MessageResponse;
 import kjm.linkverifier.link.service.CommentService;
 import kjm.linkverifier.link.service.LinkService;
 import lombok.extern.slf4j.Slf4j;
@@ -98,19 +100,18 @@ public class CommentController {
 
     @PostMapping("links/{id}/comments")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public Link addComment(@PathVariable("id") String id,
+    public ResponseEntity<?> addComment(@PathVariable("id") String id,
                            @RequestBody CommentRequest commentRequest,
                            HttpServletRequest http) {
         Link link = linkService.findById(id);
         User user = CurrentUser.getCurrentUser(http);
         Comment comment = commentService.getCommentFromCommentRequest(link, user, commentRequest);
-        log.info("linkID {}", link.getId());
-        log.info("userID {}", user.getId());
-        log.info("commentID {}", link.getId());
         List<Comment> commentLinkList = link.getComments();
         List<Comment> commentUserList = user.getComments();
         if (!commentLinkList.isEmpty() && commentLinkList.stream().anyMatch(c -> c.getUserId().equals(user.getId()))) {
-            throw new UserCommentExistsException("User " + user.getEmail() + " can not add more than one coment");
+            return ResponseEntity
+                    .badRequest()
+                    .body(new UserCommentExistsException("Nie możesz dodać więcej niż jeden komentarz"));
         }
         commentLinkList.add(comment);
         commentUserList.add(comment);
@@ -121,7 +122,7 @@ public class CommentController {
         user.setComments(commentUserList);
         userService.save(user);
         link.setComments(commentService.findAllByLinkIdOrderByCreationDateDesc(id));
-        return linkService.save(link);
+        return ResponseEntity.ok(linkService.save(link));
     }
 
 

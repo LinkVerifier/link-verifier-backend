@@ -5,6 +5,7 @@ import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.repository.CommentRepository;
 import kjm.linkverifier.link.repository.OpinionRepository;
 import kjm.linkverifier.link.requests.LinkRequest;
+import kjm.linkverifier.link.response.MessageResponse;
 import kjm.linkverifier.link.service.CommentService;
 import kjm.linkverifier.link.service.LinkService;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +48,6 @@ public class LinkController {
         int rating = linkService.calculateRatings(currentLink.getComments());
         currentLink.setRating(rating);
         currentLink.setLastVisitDate(new Date(linkRequest.getDeliveryDate()));
-        currentLink.setViews(currentLink.getViews()+1);
         linkService.save(currentLink);
         return currentLink.getId();
     }
@@ -89,7 +89,7 @@ public class LinkController {
     @PatchMapping("/{id}")
     public ResponseEntity<?> addViews(@PathVariable("id") String id) {
         linkService.addViews(id);
-        return ResponseEntity.ok("resource address updated");
+        return ResponseEntity.ok(new MessageResponse("resource address updated"));
     }
 
 }
