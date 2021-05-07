@@ -20,6 +20,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,14 +35,17 @@ public class SignInController {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final FacebookService facebookService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public SignInController(UserService userService,
                             JwtUtils jwtUtils,
                             AuthenticationManager authenticationManager,
-                            FacebookService facebookService) {
+                            FacebookService facebookService,
+                            PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.jwtUtils = jwtUtils;
+        this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.facebookService = facebookService;
     }
@@ -58,6 +62,11 @@ public class SignInController {
             return ResponseEntity
                     .badRequest()
                     .body(new InformationResponse("Error: Account is not confirmed"));
+        }
+        if(!user.getEmail().equals(loginRequest.getEmail()) || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new InformationResponse("Error: Password or email is wrong"));
         }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
