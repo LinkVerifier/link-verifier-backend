@@ -25,11 +25,14 @@ import javax.validation.Valid;
 @RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public UserController(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findUser(@PathVariable("id") String id) {

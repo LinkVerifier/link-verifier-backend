@@ -16,11 +16,14 @@ import java.nio.charset.StandardCharsets;
 @Component
 @Slf4j
 public class MailService {
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
-    @Autowired
-    private SpringTemplateEngine templateEngine;
+    private final SpringTemplateEngine templateEngine;
+
+    public MailService(JavaMailSender mailSender, SpringTemplateEngine templateEngine) {
+        this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
+    }
 
     private void createRegistrationEmail(String token, User user) throws MessagingException {
         String url = "http://localhost:8081/auth/signup/confirm?userId=" +

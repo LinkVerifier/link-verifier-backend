@@ -32,23 +32,26 @@ import java.util.Set;
 @RequestMapping("/auth")
 public class SignUpController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private PasswordEncoder encoder;
+    private final PasswordEncoder encoder;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    private SignUpService signUpService;
+    private final SignUpService signUpService;
 
-    @Autowired
-    private MailService mailService;
+    private final MailService mailService;
 
-    @Autowired
-    private FileService fileService;
+    private final FileService fileService;
+
+    public SignUpController(UserService userService, PasswordEncoder encoder, RoleRepository roleRepository, SignUpService signUpService, MailService mailService, FileService fileService) {
+        this.userService = userService;
+        this.encoder = encoder;
+        this.roleRepository = roleRepository;
+        this.signUpService = signUpService;
+        this.mailService = mailService;
+        this.fileService = fileService;
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody RegisterRequest registerRequest) throws MessagingException {

@@ -10,8 +10,11 @@ import java.util.Date;
 @Service
 public class MailVerificationService {
 
-    @Autowired
-    private MailVerificationTokenRepository tokenRepository;
+    private final MailVerificationTokenRepository tokenRepository;
+
+    public MailVerificationService(MailVerificationTokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
+    }
 
     public MailVerificationToken findByUserAndTokenAndTokenType(User user, String token, TokenType tokenType) {
         MailVerificationToken mailToken = tokenRepository.findByUserAndTokenAndTokenType(user, token, tokenType)

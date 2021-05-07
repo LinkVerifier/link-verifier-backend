@@ -30,26 +30,31 @@ import java.util.Set;
 @Service
 public class FacebookService {
 
-    @Autowired
-    private FacebookClient facebookClient;
+    private final FacebookClient facebookClient;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private FileService fileService;
+    private final FileService fileService;
+
+    public FacebookService(FacebookClient facebookClient, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, FileService fileService) {
+        this.facebookClient = facebookClient;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.fileService = fileService;
+    }
 
     public User getUserFromFacebook(String fbAccessToken, Long creationDate) {
         var facebookUser = facebookClient.getUser(fbAccessToken);
         User user;
         if(!userRepository.existsById(facebookUser.getId())) {
             user = registerFacebookUser(convertUserToFacebookUser(facebookUser, creationDate));
+        } else if(userRepository.existsByEmail(facebookUser.getEmail())) {
+            user = userRepository.findByEmail(facebookUser.getEmail()).get();
         } else {
             user = userRepository.findById(facebookUser.getId()).get();
         }
@@ -76,6 +81,7 @@ public class FacebookService {
                 .password(passwordEncoder.encode(generatePassayPassword(8)))
                 .creationDate(new Date(creationDate))
                 .profilePicture(file)
+                .isConfirmed(true)
                 .build();
     }
 
