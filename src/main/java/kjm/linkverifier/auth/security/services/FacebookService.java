@@ -51,12 +51,10 @@ public class FacebookService {
     public User getUserFromFacebook(String fbAccessToken, Long creationDate) {
         var facebookUser = facebookClient.getUser(fbAccessToken);
         User user;
-        if(!userRepository.existsById(facebookUser.getId())) {
+        if(!userRepository.existsByEmail(facebookUser.getEmail())) {
             user = registerFacebookUser(convertUserToFacebookUser(facebookUser, creationDate));
-        } else if(userRepository.existsByEmail(facebookUser.getEmail())) {
-            user = userRepository.findByEmail(facebookUser.getEmail()).get();
         } else {
-            user = userRepository.findById(facebookUser.getId()).get();
+            user = userRepository.findByEmail(facebookUser.getEmail()).get();
         }
 
         return user;
@@ -73,16 +71,18 @@ public class FacebookService {
             e.printStackTrace();
         }
         File file = fileService.store(new File(facebookUser.getPicture().toString(), "image/"+extension, fileContent));
-
-        return User.builder()
-                .id(facebookUser.getId())
-                .email(facebookUser.getEmail())
-                .username(facebookUser.getFirstName() + " " + facebookUser.getLastName())
-                .password(passwordEncoder.encode(generatePassayPassword(8)))
-                .creationDate(new Date(creationDate))
-                .profilePicture(file)
-                .isConfirmed(true)
-                .build();
+        return new User(facebookUser.getFirstName() + " " + facebookUser.getLastName(),
+                facebookUser.getEmail(),
+                passwordEncoder.encode(generatePassayPassword(8)),
+                new Date(creationDate), true, file);
+//        return User.builder()
+//                .email(facebookUser.getEmail())
+//                .username(facebookUser.getFirstName() + " " + facebookUser.getLastName())
+//                .password(passwordEncoder.encode(generatePassayPassword(8)))
+//                .creationDate(new Date(creationDate))
+//                .profilePicture(file)
+//                .isConfirmed(true)
+//                .build();
     }
 
     public User registerFacebookUser(User user) {

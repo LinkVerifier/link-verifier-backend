@@ -12,15 +12,12 @@ public interface LinkRepository extends MongoRepository<Link, String> {
 
     Optional<Link> findByLinkName(String link);
 
-    Optional<Link> findByCommentsContaining(Comment comment);
-
     List<Link> findAllByOrderByCreationDateDesc();
-
-    List<Link> findAllByOrderByLastVisitDateDesc();
 
     List<Link> findAllByOrderByRatingAsc();
 
     List<Link> findAllByOrderByViewsDesc();
 
     Optional<Link> findLinkByCommentsLike(Comment comment);
+
 }

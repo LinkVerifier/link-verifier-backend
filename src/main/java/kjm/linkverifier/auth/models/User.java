@@ -29,6 +29,15 @@ public class User {
         this.roles = new HashSet<>() {{ new Role(RoleEnum.ROLE_USER); }};
     }
 
+    public User(String username, String email, String password, Date date, boolean isConfirmed, File profilePicture) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.creationDate = date;
+        this.isConfirmed = isConfirmed;
+        this.profilePicture = profilePicture;
+    }
+
     @Id
     private String id;
 
@@ -62,5 +71,6 @@ public class User {
 
     @DBRef
     private File profilePicture;
+
 
 }

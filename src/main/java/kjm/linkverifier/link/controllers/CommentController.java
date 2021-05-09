@@ -45,7 +45,6 @@ public class CommentController {
         return commentService.findById(id);
     }
 
-
     @PutMapping("comments/{id}/like")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Comment updateUsersWhoLikeComment(@PathVariable String id,
@@ -108,23 +107,23 @@ public class CommentController {
         Comment comment = commentService.getCommentFromCommentRequest(link, user, commentRequest);
         List<Comment> commentLinkList = link.getComments();
         List<Comment> commentUserList = user.getComments();
-        if (!commentLinkList.isEmpty() && commentLinkList.stream().anyMatch(c -> c.getUserId().equals(user.getId()))) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new UserCommentExistsException("Nie możesz dodać więcej niż jeden komentarz"));
-        }
+//        if (!commentLinkList.isEmpty() && commentLinkList.stream().anyMatch(c -> c.getUserId().equals(user.getId()))) {
+//            return ResponseEntity
+//                    .badRequest()
+//                    .body(new UserCommentExistsException("Nie możesz dodać więcej niż jeden komentarz"));
+//        }
         commentLinkList.add(comment);
         commentUserList.add(comment);
+        user.setComments(commentUserList);
         int rating = linkService.calculateRatings(link.getComments());
         link.setRating(rating);
         link.setLastCommentDate(new Date(commentRequest.getDate()));
         commentService.save(comment);
-        user.setComments(commentUserList);
+        link.setComments(commentLinkList);
+        linkService.save(link);
         userService.save(user);
         link.setComments(commentService.findAllByLinkIdOrderByCreationDateDesc(id));
+        log.info("ostatni: {} ",link.getComments());
         return ResponseEntity.ok(linkService.save(link));
     }
-
-
-
 }

@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -87,7 +84,7 @@ public class CommentService {
                             .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
             }
         }
-        return new Comment(commentRequest.getComment(), user.getId(), link.getId(), date, opinion);
+        return new Comment(commentRequest.getComment(), date, opinion);
     }
 
     // musi zwracać KOMENTARZ
@@ -99,18 +96,26 @@ public class CommentService {
 
         List<Comment> commentLinkList = link.getComments();
         List<Comment> commentUserList = user.getComments();
-        if (commentLinkList.stream().anyMatch(c -> c.getUserId().equals(user.getId()))) {
-            throw new UserCommentExistsException("User " + user.getEmail() + " can not add more than one comment");
-        }
+//        if (commentLinkList.stream().anyMatch(c -> c.getUserId().equals(user.getId()))) {
+//            throw new UserCommentExistsException("User " + user.getEmail() + " can not add more than one comment");
+//        }
         commentLinkList.add(comment);
         commentUserList.add(comment);
         save(comment);
         userService.save(user);
-        link.setComments(commentRepository.findAllByLinkIdOrderByCreationDateDesc(id));
+        link.setComments(findAllByLinkOrderByCreationDateDesc(link));
         user.setComments(commentUserList);
         int rating = linkService.calculateRatings(link.getComments());
         link.setRating(rating);
         return linkService.save(link);
+    }
+
+    public List<Comment> findAllByLinkOrderByCreationDateDesc(Link link) {
+        List<Comment> comments = link.getComments();
+        log.info("wszystkie: {}", comments);
+        comments.sort(Comparator.comparing(Comment::getCreationDate).reversed());
+        log.info("posortowane: {}", comments);
+        return comments;
     }
 
     public Comment likeUnlikeComment(Comment comment, User user) {
@@ -167,7 +172,8 @@ public class CommentService {
     }
 
     public List<Comment> findAllByLinkIdOrderByCreationDateDesc(String id) {
-        return commentRepository.findAllByLinkIdOrderByCreationDateDesc(id);
+        Link link = linkService.findById(id);
+        return findAllByLinkOrderByCreationDateDesc(link);
     }
 
     public List<Comment> findAll() {

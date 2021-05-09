@@ -23,16 +23,17 @@ public class Comment {
     @NonNull
     private String comment;
 
-    @NonNull
-    private String userId;
-
-    @NonNull
-    private String linkId;
+//    @NonNull
+//    private String userId;
+//
+//    @NonNull
+//    private String linkId;
 
     @NonNull
     private Date creationDate;
 
     @NonNull
+    @DBRef
     private Opinion opinion;
 
     private Set<String> usersWhoLike = new HashSet<>();
