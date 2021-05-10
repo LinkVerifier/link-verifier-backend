@@ -4,10 +4,14 @@ import kjm.linkverifier.auth.exceptions.PasswordsNotMatchException;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.UserRepository;
 import kjm.linkverifier.auth.service.CurrentUser;
+import kjm.linkverifier.auth.service.UserService;
 import kjm.linkverifier.auth.web.request.PasswordRequest;
 import kjm.linkverifier.auth.web.request.UsernameRequest;
 import kjm.linkverifier.auth.web.response.ExceptionResponse;
 import kjm.linkverifier.auth.web.response.InformationResponse;
+import kjm.linkverifier.link.model.Comment;
+import kjm.linkverifier.link.repository.CommentRepository;
+import kjm.linkverifier.link.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -27,19 +32,20 @@ public class UserController {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public UserController(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    private final CommentService commentService;
+
+    public UserController(PasswordEncoder passwordEncoder, UserService userService, CommentService commentService) {
         this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
+        this.userService = userService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findUser(@PathVariable("id") String id) {
         log.info("IDD {}", id );
-        return userRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElseThrow(() -> new RuntimeException(id));
+        return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
     }
 
     @PutMapping("/change_username")
@@ -48,7 +54,7 @@ public class UserController {
                                             @Valid @RequestBody UsernameRequest usernameRequest) {
         User user = CurrentUser.getCurrentUser(httpServletRequest);
         user.setUsername(usernameRequest.getUsername());
-        userRepository.save(user);
+        userService.save(user);
         return new ResponseEntity<>(new InformationResponse("Nazwa użytkownika zmieniona"), HttpStatus.OK);
     }
 
@@ -65,8 +71,17 @@ public class UserController {
         if(passwordEncoder.matches(passwordRequest.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
         }
-        userRepository.save(user);
+        userService.save(user);
         return new ResponseEntity<>("Hasło zmienione.", HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getUserByCommentId(@RequestParam(name = "commentId", required = false) String commentId) {
+        if(commentId == null) {
+            return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+        }
+        Comment comment = commentService.findById(commentId);
+        return new ResponseEntity<>(userService.findByCommentsContaining(comment), HttpStatus.OK);
     }
 
     @GetMapping("/get_user")

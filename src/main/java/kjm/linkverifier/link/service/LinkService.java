@@ -112,4 +112,8 @@ public class LinkService {
         return linkRepository.findAllByOrderByViewsDesc().subList(from, to);
     }
 
+    public Link findByCommentsContaining(Comment comment) {
+        return linkRepository.findLinkByCommentsLike(comment).orElseThrow(LinkNotFoundException::new);
+    }
+
 }

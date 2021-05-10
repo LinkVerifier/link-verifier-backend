@@ -1,6 +1,7 @@
 package kjm.linkverifier.link.controllers;
 
 import kjm.linkverifier.auth.service.UserService;
+import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.repository.CommentRepository;
 import kjm.linkverifier.link.repository.OpinionRepository;
@@ -10,6 +11,7 @@ import kjm.linkverifier.link.service.CommentService;
 import kjm.linkverifier.link.service.LinkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,30 +55,35 @@ public class LinkController {
     }
 
     @GetMapping
-    public List<Link> showLinks(@RequestParam(required = false) String search,
-                                @RequestParam(required = false) String to) {
+    public ResponseEntity<?> showLinks(@RequestParam(required = false) String search,
+                                @RequestParam(required = false) String to,
+                                @RequestParam(required = false) String commentId) {
         if(to != null) {
             int toInt = Integer.parseInt(to);
             switch (search) {
                 case "new":
-                    return linkService.findAllByOrderByCreationDateDesc(0, toInt);
+                    return new ResponseEntity<>(linkService.findAllByOrderByCreationDateDesc(0, toInt), HttpStatus.OK);
                 case "most_visited":
-                    return linkService.findAllByOrderByViewsDesc(0, toInt);
+                    return new ResponseEntity<>(linkService.findAllByOrderByViewsDesc(0, toInt), HttpStatus.OK);
                 case "most_dangerous":
-                    return linkService.findAllByOrderByRatingAsc(0, toInt);
+                    return new ResponseEntity<>(linkService.findAllByOrderByRatingAsc(0, toInt), HttpStatus.OK);
                 default:
-                    return linkService.findAll();
+                    return new ResponseEntity<>(linkService.findAll(), HttpStatus.OK);
             }
         } else {
             switch (search) {
                 case "new":
-                    return linkService.findAllByOrderByCreationDateDesc();
+                    return new ResponseEntity<>(linkService.findAllByOrderByCreationDateDesc(), HttpStatus.OK);
                 case "most_visited":
-                    return linkService.findAllByOrderByViewsDesc();
+                    return new ResponseEntity<>(linkService.findAllByOrderByViewsDesc(), HttpStatus.OK);
                 case "most_dangerous":
-                    return linkService.findAllByOrderByRatingAsc();
+                    return new ResponseEntity<>(linkService.findAllByOrderByRatingAsc(), HttpStatus.OK);
                 default:
-                    return linkService.findAll();
+                    if(commentId != null) {
+                        Comment comment = commentService.findById(commentId);
+                        return new ResponseEntity<>(linkService.findByCommentsContaining(comment), HttpStatus.OK);
+                    }
+                    return new ResponseEntity<>(linkService.findAll(), HttpStatus.OK);
             }
         }
     }

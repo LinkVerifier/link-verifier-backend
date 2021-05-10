@@ -1,5 +1,8 @@
 package kjm.linkverifier;
 
+import kjm.linkverifier.auth.models.User;
+import kjm.linkverifier.auth.repository.UserRepository;
+import kjm.linkverifier.files.model.File;
 import kjm.linkverifier.link.model.Opinion;
 import kjm.linkverifier.link.model.OpinionEnum;
 import kjm.linkverifier.link.repository.OpinionRepository;
@@ -11,7 +14,11 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Date;
+import java.util.HashSet;
 
 @SpringBootApplication
 @EnableMongoAuditing
@@ -19,6 +26,12 @@ import org.springframework.web.client.RestTemplate;
 public class LinkverifierApplication {
     @Autowired
     private OpinionRepository opinionRepository;
+
+    @Autowired
+    private PasswordEncoder encoder;
+
+    @Autowired
+    private UserRepository userRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(LinkverifierApplication.class, args);
@@ -30,7 +43,7 @@ public class LinkverifierApplication {
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void insertOptionsToDatabase() {
+    public void insertToDatabase() {
 //        opinionRepository.save(new Opinion(OpinionEnum.FRAUD));
 //        opinionRepository.save(new Opinion(OpinionEnum.INDECENT_CONTENT));
 //        opinionRepository.save(new Opinion(OpinionEnum.FAKE_NEWS));
