@@ -93,6 +93,8 @@ public class SignUpController {
         }
 
         user.setRoles(rolesToSet);
+        log.info(user.getRoles().toString());
+
         java.io.File file = new File("profilepic.jpg");
         kjm.linkverifier.files.model.File savedFile = fileService.store(file);
         user.setProfilePicture(savedFile);

@@ -50,6 +50,10 @@ public class FileService {
                 .orElseThrow(() -> new RuntimeException("Error: File is not found"));
     }
 
+    public void delete(File file) {
+        fileRepository.delete(file);
+    }
+
     public Stream<File> findAllFiles() {
         return fileRepository.findAll().stream();
     }

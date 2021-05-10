@@ -51,6 +51,7 @@ public class LinkService {
     }
 
     public int calculateRatings(List<Comment> comments) {
+        int countNeutral = 0;
         if(comments.size() == 0) {
             return 0;
         }
@@ -62,12 +63,14 @@ public class LinkService {
                     comm.getOpinion().getName().equals(OpinionEnum.VIRUS)) {
                 counter++;
             }
+            if (comm.getOpinion().getName().equals(OpinionEnum.NEUTRAL)) {
+                countNeutral++;
+            }
+            if(comments.size()-countNeutral==0) {
+                return 0;
+            }
         }
-        comments.removeIf(s -> s.getOpinion().getName().equals(OpinionEnum.NEUTRAL));
-        if(comments.size() == 0) {
-            return 0;
-        }
-        return (counter*100/comments.size());
+        return (counter*100/(comments.size()-countNeutral));
     }
 
     public Link findLinkByCommentsLike(Comment comment) {

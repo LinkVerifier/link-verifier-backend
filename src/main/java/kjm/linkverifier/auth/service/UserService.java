@@ -10,6 +10,8 @@ import kjm.linkverifier.auth.repository.UserRepository;
 import kjm.linkverifier.files.repository.FileRepository;
 import kjm.linkverifier.files.service.FileService;
 import kjm.linkverifier.link.model.Comment;
+import kjm.linkverifier.link.service.CommentService;
+import kjm.linkverifier.link.service.LinkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +35,12 @@ public class UserService {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    CommentService commentService;
+
+    @Autowired
+    LinkService linkService;
 
     @Autowired
     private FileService fileService;
@@ -63,9 +71,20 @@ public class UserService {
         return userRepository.findByCommentsContaining(comment).orElseThrow(UserNotFoundException::new);
     }
 
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+        commentService.deleteSome(user.getComments());
+        fileService.delete(user.getProfilePicture());
+    }
+
     @Bean
     public CommandLineRunner saveAdmin() {
         return(args -> {
+
+            if (roleRepository.findAll().size() == 0) {
+            roleRepository.save(new Role(RoleEnum.ROLE_USER));
+            roleRepository.save(new Role(RoleEnum.ROLE_ADMIN));
+            }
             if (!userRepository.existsByEmail("admin@admin.pl")) {
                 java.io.File file = new File("profilepic.jpg");
                 kjm.linkverifier.files.model.File savedFile = fileService.store(file);
@@ -81,6 +100,8 @@ public class UserService {
                 user.setRoles(roleToSet);
                 userRepository.save(user);
             }
+
         });
     }
+
 }

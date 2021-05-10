@@ -1,23 +1,18 @@
 package kjm.linkverifier.link.service;
 
 import kjm.linkverifier.auth.models.User;
-import kjm.linkverifier.auth.repository.UserRepository;
-import kjm.linkverifier.auth.service.CurrentUser;
 import kjm.linkverifier.auth.service.UserService;
-import kjm.linkverifier.link.exceptions.UserCommentExistsException;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.model.Opinion;
 import kjm.linkverifier.link.model.OpinionEnum;
 import kjm.linkverifier.link.repository.CommentRepository;
-import kjm.linkverifier.link.repository.LinkRepository;
 import kjm.linkverifier.link.repository.OpinionRepository;
 import kjm.linkverifier.link.requests.CommentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Service
@@ -45,7 +40,15 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public Comment getCommentFromCommentRequest(Link link, User user, CommentRequest commentRequest) {
+    public void delete(Comment comment) {
+        commentRepository.delete(comment);
+    }
+
+    public void deleteSome(List<Comment> comments) {
+        //commentRepository.deleteComments(comments);
+    }
+
+    public Comment saveCommentFromCommentRequest(CommentRequest commentRequest) {
         Date date = new Date(commentRequest.getDate());
         String opinionStr = commentRequest.getOpinion();
         Opinion opinion;
@@ -84,30 +87,8 @@ public class CommentService {
                             .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
             }
         }
-        return new Comment(commentRequest.getComment(), date, opinion);
-    }
-
-    // musi zwracać KOMENTARZ
-    public Link addComment(String id, HttpServletRequest http, CommentRequest commentRequest) {
-        Link link = linkService.findById(id);
-        User user = CurrentUser.getCurrentUser(http);
-        Comment comment = getCommentFromCommentRequest(link, user, commentRequest);
-        //return commentService.addComment(id, http, commentRequest);
-
-        List<Comment> commentLinkList = link.getComments();
-        List<Comment> commentUserList = user.getComments();
-//        if (commentLinkList.stream().anyMatch(c -> c.getUserId().equals(user.getId()))) {
-//            throw new UserCommentExistsException("User " + user.getEmail() + " can not add more than one comment");
-//        }
-        commentLinkList.add(comment);
-        commentUserList.add(comment);
-        save(comment);
-        userService.save(user);
-        link.setComments(findAllByLinkOrderByCreationDateDesc(link));
-        user.setComments(commentUserList);
-        int rating = linkService.calculateRatings(link.getComments());
-        link.setRating(rating);
-        return linkService.save(link);
+        Comment comment = new Comment(commentRequest.getComment(), date, opinion);
+        return save(comment);
     }
 
     public List<Comment> findAllByLinkOrderByCreationDateDesc(Link link) {

@@ -67,6 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/links/**").permitAll()
                 .antMatchers("/facebook/signin").permitAll()
                 .antMatchers("/users/**").permitAll()
+                .antMatchers("/comments/**").permitAll()
                 .anyRequest().authenticated();
 
 

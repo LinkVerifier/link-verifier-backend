@@ -45,7 +45,16 @@ public class UserController {
     @GetMapping("/{id}")
     public ResponseEntity<?> findUser(@PathVariable("id") String id) {
         log.info("IDD {}", id );
-        return new ResponseEntity<>(userService.findById(id), HttpStatus.OK);
+        log.info("ROLE: {} ",userService.findById(id).getRoles());
+        return ResponseEntity.ok().body(userService.findById(id));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public void delete(@PathVariable("id") String id) {
+        User user = userService.findById(id);
+        userService.deleteUser(userService.findById(id));
+        commentService.deleteSome(user.getComments());
     }
 
     @PutMapping("/change_username")

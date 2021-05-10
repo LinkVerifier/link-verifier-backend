@@ -40,7 +40,7 @@ public class CommentController {
     @Autowired
     private LinkService linkService;
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public Comment getComment(@PathVariable String id) {
         return commentService.findById(id);
     }
@@ -104,7 +104,6 @@ public class CommentController {
                            HttpServletRequest http) {
         Link link = linkService.findById(id);
         User user = CurrentUser.getCurrentUser(http);
-        Comment comment = commentService.getCommentFromCommentRequest(link, user, commentRequest);
         List<Comment> commentLinkList = link.getComments();
         List<Comment> commentUserList = user.getComments();
         if (!commentLinkList.isEmpty() && commentUserList.stream().anyMatch(commentLinkList::contains)) {
@@ -112,18 +111,18 @@ public class CommentController {
                     .badRequest()
                     .body(new UserCommentExistsException("Nie możesz dodać więcej niż jeden komentarz"));
         }
+        Comment comment = commentService.saveCommentFromCommentRequest(commentRequest);
         commentLinkList.add(comment);
         commentUserList.add(comment);
         user.setComments(commentUserList);
         int rating = linkService.calculateRatings(link.getComments());
         link.setRating(rating);
         link.setLastCommentDate(new Date(commentRequest.getDate()));
-        commentService.save(comment);
         link.setComments(commentLinkList);
         linkService.save(link);
         userService.save(user);
         link.setComments(commentService.findAllByLinkIdOrderByCreationDateDesc(id));
-        log.info("ostatni: {} ",link.getComments());
+        log.info("comments {}", link.getComments());
         return ResponseEntity.ok(linkService.save(link));
     }
 }
