@@ -66,7 +66,6 @@ public class UserController {
         User user = CurrentUser.getCurrentUser(httpServletRequest);
         if(!passwordRequest.getNewPassword().equals(passwordRequest.getNewRepeatedPassword())) {
             return new ResponseEntity<>(new ExceptionResponse("Hasła nie są takie same"), HttpStatus.OK);
-            //throw new PasswordsNotMatchException("Passwords do not match.");
         }
         if(passwordEncoder.matches(passwordRequest.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));

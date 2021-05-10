@@ -71,20 +71,11 @@ public class LinkController {
                     return new ResponseEntity<>(linkService.findAll(), HttpStatus.OK);
             }
         } else {
-            switch (search) {
-                case "new":
-                    return new ResponseEntity<>(linkService.findAllByOrderByCreationDateDesc(), HttpStatus.OK);
-                case "most_visited":
-                    return new ResponseEntity<>(linkService.findAllByOrderByViewsDesc(), HttpStatus.OK);
-                case "most_dangerous":
-                    return new ResponseEntity<>(linkService.findAllByOrderByRatingAsc(), HttpStatus.OK);
-                default:
-                    if(commentId != null) {
-                        Comment comment = commentService.findById(commentId);
-                        return new ResponseEntity<>(linkService.findByCommentsContaining(comment), HttpStatus.OK);
-                    }
-                    return new ResponseEntity<>(linkService.findAll(), HttpStatus.OK);
+            if(commentId != null) {
+                Comment comment = commentService.findById(commentId);
+                return new ResponseEntity<>(linkService.findByCommentsContaining(comment), HttpStatus.OK);
             }
+            return new ResponseEntity<>(linkService.findAll(), HttpStatus.OK);
         }
     }
 

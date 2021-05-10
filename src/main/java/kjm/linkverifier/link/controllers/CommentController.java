@@ -107,11 +107,11 @@ public class CommentController {
         Comment comment = commentService.getCommentFromCommentRequest(link, user, commentRequest);
         List<Comment> commentLinkList = link.getComments();
         List<Comment> commentUserList = user.getComments();
-//        if (!commentLinkList.isEmpty() && commentLinkList.stream().anyMatch(c -> c.getUserId().equals(user.getId()))) {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(new UserCommentExistsException("Nie możesz dodać więcej niż jeden komentarz"));
-//        }
+        if (!commentLinkList.isEmpty() && commentUserList.stream().anyMatch(commentLinkList::contains)) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new UserCommentExistsException("Nie możesz dodać więcej niż jeden komentarz"));
+        }
         commentLinkList.add(comment);
         commentUserList.add(comment);
         user.setComments(commentUserList);
