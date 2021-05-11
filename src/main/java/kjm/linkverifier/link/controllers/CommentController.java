@@ -1,5 +1,7 @@
 package kjm.linkverifier.link.controllers;
 
+import kjm.linkverifier.auth.models.Role;
+import kjm.linkverifier.auth.models.RoleEnum;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.service.CurrentUser;
 import kjm.linkverifier.auth.service.UserService;
@@ -77,12 +79,24 @@ public class CommentController {
         link.getComments().remove(comment);
         link.setRating(linkService.calculateRatings(link.getComments()));
         linkService.save(link);
-        user.getComments().remove(comment);
-        user.setComments(user.getComments());
-        userService.save(user);
-        commentService.deleteById(id);
+
+        if(user.getRoles().stream().anyMatch(e -> e.getName().equals(RoleEnum.ROLE_ADMIN))) {
+            User user1 = userService.findByCommentsContaining(comment);
+            user1.getComments().remove(comment);
+            user1.setComments(user1.getComments());
+            userService.save(user1);
+            commentService.deleteById(id);
+        } else {
+            user.getComments().remove(comment);
+            user.setComments(user.getComments());
+            userService.save(user);
+            commentService.deleteById(id);
+        }
+
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
 
     @GetMapping("comments")
     public List<Comment> getAll(@RequestParam(required = false) String search,
