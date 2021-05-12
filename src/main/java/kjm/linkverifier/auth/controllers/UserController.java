@@ -1,8 +1,6 @@
 package kjm.linkverifier.auth.controllers;
 
-import kjm.linkverifier.auth.exceptions.PasswordsNotMatchException;
 import kjm.linkverifier.auth.models.User;
-import kjm.linkverifier.auth.repository.UserRepository;
 import kjm.linkverifier.auth.service.CurrentUser;
 import kjm.linkverifier.auth.service.UserService;
 import kjm.linkverifier.auth.web.request.PasswordRequest;
@@ -10,10 +8,8 @@ import kjm.linkverifier.auth.web.request.UsernameRequest;
 import kjm.linkverifier.auth.web.response.ExceptionResponse;
 import kjm.linkverifier.auth.web.response.InformationResponse;
 import kjm.linkverifier.link.model.Comment;
-import kjm.linkverifier.link.repository.CommentRepository;
 import kjm.linkverifier.link.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @Slf4j

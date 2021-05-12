@@ -3,7 +3,6 @@ package kjm.linkverifier.auth.service;
 import kjm.linkverifier.auth.mail.*;
 import kjm.linkverifier.auth.models.User;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
@@ -13,17 +12,20 @@ import java.util.Optional;
 @Slf4j
 public class SignUpService {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private MailVerificationService verificationTokenService;
+    private final MailVerificationService verificationTokenService;
 
-    @Autowired
-    private MailVerificationTokenRepository tokenRepository;
+    private final MailVerificationTokenRepository tokenRepository;
 
-    @Autowired
-    private MailService mailService;
+    private final MailService mailService;
+
+    public SignUpService(UserService userService, MailVerificationService verificationTokenService, MailVerificationTokenRepository tokenRepository, MailService mailService) {
+        this.userService = userService;
+        this.verificationTokenService = verificationTokenService;
+        this.tokenRepository = tokenRepository;
+        this.mailService = mailService;
+    }
 
 
     public User confirmSignUp(String id, String token) {

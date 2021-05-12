@@ -1,7 +1,6 @@
 package kjm.linkverifier.auth.security.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import kjm.linkverifier.auth.models.Role;
 import kjm.linkverifier.auth.models.User;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;

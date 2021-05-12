@@ -44,7 +44,12 @@ public class SignUpController {
 
     private final FileService fileService;
 
-    public SignUpController(UserService userService, PasswordEncoder encoder, RoleRepository roleRepository, SignUpService signUpService, MailService mailService, FileService fileService) {
+    public SignUpController(UserService userService,
+                            PasswordEncoder encoder,
+                            RoleRepository roleRepository,
+                            SignUpService signUpService,
+                            MailService mailService,
+                            FileService fileService) {
         this.userService = userService;
         this.encoder = encoder;
         this.roleRepository = roleRepository;

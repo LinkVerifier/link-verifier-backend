@@ -3,7 +3,6 @@ package kjm.linkverifier.files.controller;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.UserRepository;
 import kjm.linkverifier.auth.service.CurrentUser;
-import kjm.linkverifier.auth.service.UserService;
 import kjm.linkverifier.files.model.File;
 import kjm.linkverifier.files.response.ResponseFile;
 import kjm.linkverifier.files.response.ResponseMessage;

@@ -90,7 +90,7 @@ public class UserService {
                 kjm.linkverifier.files.model.File savedFile = fileService.store(file);
                 User user = new User("admin",
                         "admin@admin.pl",
-                        encoder.encode("admin"),
+                        encoder.encode("admin123"),
                         new Date(),
                         true,
                         savedFile);

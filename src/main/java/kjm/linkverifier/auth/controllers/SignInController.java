@@ -32,9 +32,13 @@ import javax.validation.Valid;
 public class SignInController {
 
     private final UserService userService;
+
     private final JwtUtils jwtUtils;
+
     private final AuthenticationManager authenticationManager;
+
     private final FacebookService facebookService;
+
     private final PasswordEncoder passwordEncoder;
 
     @Autowired

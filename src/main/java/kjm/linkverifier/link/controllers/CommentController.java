@@ -1,53 +1,49 @@
 package kjm.linkverifier.link.controllers;
 
-import kjm.linkverifier.auth.models.Role;
 import kjm.linkverifier.auth.models.RoleEnum;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.service.CurrentUser;
 import kjm.linkverifier.auth.service.UserService;
-import kjm.linkverifier.auth.web.response.InformationResponse;
-import kjm.linkverifier.files.response.ResponseMessage;
 import kjm.linkverifier.link.exceptions.UserCommentExistsException;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
-import kjm.linkverifier.link.repository.CommentRepository;
 import kjm.linkverifier.link.requests.CommentRequest;
-import kjm.linkverifier.link.response.MessageResponse;
 import kjm.linkverifier.link.service.CommentService;
 import kjm.linkverifier.link.service.LinkService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @RestController
 @Slf4j
 @CrossOrigin(origins = "*", maxAge = 3600)
-@RequestMapping("/")
+@RequestMapping()
 public class CommentController {
 
-    @Autowired
-    private CommentService commentService;
+    private final CommentService commentService;
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    private LinkService linkService;
+    private final LinkService linkService;
 
-    @GetMapping("{id}")
+    public CommentController(CommentService commentService, UserService userService, LinkService linkService) {
+        this.commentService = commentService;
+        this.userService = userService;
+        this.linkService = linkService;
+    }
+
+    @GetMapping("/{id}")
     public Comment getComment(@PathVariable String id) {
         return commentService.findById(id);
     }
 
-    @PutMapping("comments/{id}/like")
+    @PutMapping("/comments/{id}/like")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Comment updateUsersWhoLikeComment(@PathVariable String id,
                                              HttpServletRequest httpServletRequest) {
@@ -59,7 +55,7 @@ public class CommentController {
         return commentService.save(newComment);
     }
 
-    @PutMapping("comments/{id}/dislike")
+    @PutMapping("/comments/{id}/dislike")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Comment updateUsersWhoDislikeComment(@PathVariable String id,
                                                 HttpServletRequest httpServletRequest) {
@@ -69,7 +65,7 @@ public class CommentController {
         return commentService.save(newComment);
     }
 
-    @DeleteMapping("comments/{id}")
+    @DeleteMapping("/comments/{id}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable String id,
                                     HttpServletRequest httpServletRequest) {
@@ -85,20 +81,16 @@ public class CommentController {
             user1.getComments().remove(comment);
             user1.setComments(user1.getComments());
             userService.save(user1);
-            commentService.deleteById(id);
         } else {
             user.getComments().remove(comment);
             user.setComments(user.getComments());
             userService.save(user);
-            commentService.deleteById(id);
         }
-
+        commentService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-
-    @GetMapping("comments")
+    @GetMapping("/comments")
     public List<Comment> getAll(@RequestParam(required = false) String search,
                                 @RequestParam(required = false) String to) {
 
@@ -111,7 +103,7 @@ public class CommentController {
         return commentService.findAll();
     }
 
-    @PostMapping("links/{id}/comments")
+    @PostMapping("/links/{id}/comments")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<?> addComment(@PathVariable("id") String id,
                            @RequestBody CommentRequest commentRequest,

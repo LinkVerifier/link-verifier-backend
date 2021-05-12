@@ -1,7 +1,6 @@
 package kjm.linkverifier.auth.client;
 
-import kjm.linkverifier.auth.security.oauth2.FacebookUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import kjm.linkverifier.auth.models.facebook.FacebookUser;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -11,10 +10,13 @@ import java.util.Map;
 @Service
 public class FacebookClient {
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     private final String FACEBOOK_GRAPH_API_BASE = "https://graph.facebook.com";
+
+    public FacebookClient(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     public FacebookUser getUser(String accessToken) {
         var path = "/me?fields={fields}&redirect={redirect}&access_token={access_token}";

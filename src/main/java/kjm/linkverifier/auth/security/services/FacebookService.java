@@ -7,7 +7,7 @@ import kjm.linkverifier.auth.models.RoleEnum;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.RoleRepository;
 import kjm.linkverifier.auth.repository.UserRepository;
-import kjm.linkverifier.auth.security.oauth2.FacebookUser;
+import kjm.linkverifier.auth.models.facebook.FacebookUser;
 import kjm.linkverifier.files.model.File;
 import kjm.linkverifier.files.service.FileService;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,6 @@ import org.passay.CharacterData;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -75,14 +74,6 @@ public class FacebookService {
                 facebookUser.getEmail(),
                 passwordEncoder.encode(generatePassayPassword(8)),
                 new Date(creationDate), true, file);
-//        return User.builder()
-//                .email(facebookUser.getEmail())
-//                .username(facebookUser.getFirstName() + " " + facebookUser.getLastName())
-//                .password(passwordEncoder.encode(generatePassayPassword(8)))
-//                .creationDate(new Date(creationDate))
-//                .profilePicture(file)
-//                .isConfirmed(true)
-//                .build();
     }
 
     public User registerFacebookUser(User user) {

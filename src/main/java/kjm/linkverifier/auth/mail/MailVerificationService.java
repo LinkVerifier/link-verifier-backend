@@ -2,7 +2,6 @@ package kjm.linkverifier.auth.mail;
 
 import kjm.linkverifier.auth.mail.exceptions.TokenException;
 import kjm.linkverifier.auth.models.User;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

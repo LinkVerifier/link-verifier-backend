@@ -19,17 +19,20 @@ import java.util.*;
 @Slf4j
 public class CommentService {
 
-    @Autowired
-    CommentRepository commentRepository;
+    final CommentRepository commentRepository;
 
-    @Autowired
-    LinkService linkService;
+    final LinkService linkService;
 
-    @Autowired
-    UserService userService;
+    final UserService userService;
 
-    @Autowired
-    OpinionRepository opinionRepository;
+    final OpinionRepository opinionRepository;
+
+    public CommentService(CommentRepository commentRepository, LinkService linkService, UserService userService, OpinionRepository opinionRepository) {
+        this.commentRepository = commentRepository;
+        this.linkService = linkService;
+        this.userService = userService;
+        this.opinionRepository = opinionRepository;
+    }
 
     public Comment findById(String id) {
         return commentRepository.findById(id)

@@ -4,8 +4,6 @@ package kjm.linkverifier.auth.security;
 import kjm.linkverifier.auth.security.jwtToken.AuthEntryPointJwtToken;
 import kjm.linkverifier.auth.security.jwtToken.AuthTokenFilter;
 import kjm.linkverifier.auth.security.services.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,11 +25,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
+    final UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
-    private AuthEntryPointJwtToken authEntryPointJwtToken;
+    private final AuthEntryPointJwtToken authEntryPointJwtToken;
+
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwtToken authEntryPointJwtToken) {
+        this.userDetailsService = userDetailsService;
+        this.authEntryPointJwtToken = authEntryPointJwtToken;
+    }
 
     @Bean
     public AuthTokenFilter authTokenFilter() {
@@ -62,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests().antMatchers("/auth/signup/confirm/**").permitAll()
                 .antMatchers("/auth/signup/**").permitAll()
-                .antMatchers("files/**").permitAll()
+                .antMatchers("/files/**").permitAll()
                 .antMatchers("/**").permitAll()
                 .antMatchers("/links/**").permitAll()
                 .antMatchers("/facebook/signin").permitAll()
