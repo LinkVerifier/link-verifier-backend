@@ -1,4 +1,4 @@
-package kjm.linkverifier.auth.security.oauth2;
+package kjm.linkverifier.auth.models.facebook;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
