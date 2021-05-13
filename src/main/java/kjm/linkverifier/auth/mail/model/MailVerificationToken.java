@@ -1,4 +1,4 @@
-package kjm.linkverifier.auth.mail;
+package kjm.linkverifier.auth.mail.model;
 
 import kjm.linkverifier.auth.models.User;
 import lombok.AllArgsConstructor;

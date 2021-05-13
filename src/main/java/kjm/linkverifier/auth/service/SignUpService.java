@@ -1,6 +1,10 @@
 package kjm.linkverifier.auth.service;
 
-import kjm.linkverifier.auth.mail.*;
+import kjm.linkverifier.auth.mail.model.MailVerificationToken;
+import kjm.linkverifier.auth.mail.model.TokenType;
+import kjm.linkverifier.auth.mail.repository.MailVerificationTokenRepository;
+import kjm.linkverifier.auth.mail.service.MailService;
+import kjm.linkverifier.auth.mail.service.MailVerificationService;
 import kjm.linkverifier.auth.models.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

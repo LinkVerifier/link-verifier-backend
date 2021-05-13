@@ -1,5 +1,8 @@
-package kjm.linkverifier.auth.mail;
+package kjm.linkverifier.auth.mail.service;
 
+import kjm.linkverifier.auth.mail.model.MailVerificationToken;
+import kjm.linkverifier.auth.mail.repository.MailVerificationTokenRepository;
+import kjm.linkverifier.auth.mail.model.TokenType;
 import kjm.linkverifier.auth.mail.exceptions.TokenException;
 import kjm.linkverifier.auth.models.User;
 import org.springframework.stereotype.Service;

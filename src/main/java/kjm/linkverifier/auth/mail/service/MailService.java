@@ -1,4 +1,4 @@
-package kjm.linkverifier.auth.mail;
+package kjm.linkverifier.auth.mail.service;
 
 import kjm.linkverifier.auth.models.User;
 import lombok.extern.slf4j.Slf4j;
