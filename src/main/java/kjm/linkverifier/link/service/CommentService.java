@@ -48,14 +48,13 @@ public class CommentService {
     }
 
     public void deleteSome(List<Comment> comments) {
-        //commentRepository.deleteComments(comments);
+        commentRepository.deleteAll(comments);
     }
 
     public Comment saveCommentFromCommentRequest(CommentRequest commentRequest) {
         Date date = new Date(commentRequest.getDate());
         String opinionStr = commentRequest.getOpinion();
         Opinion opinion;
-        log.info(opinionStr + " <- opinion");
         if(opinionStr == null) {
             opinion = opinionRepository.findByName(OpinionEnum.NEUTRAL)
                     .orElseThrow(() -> new RuntimeException("Error : Opinion is not found"));
@@ -96,9 +95,7 @@ public class CommentService {
 
     public List<Comment> findAllByLinkOrderByCreationDateDesc(Link link) {
         List<Comment> comments = link.getComments();
-        log.info("wszystkie: {}", comments);
         comments.sort(Comparator.comparing(Comment::getCreationDate).reversed());
-        log.info("posortowane: {}", comments);
         return comments;
     }
 

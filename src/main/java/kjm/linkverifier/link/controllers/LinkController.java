@@ -81,7 +81,8 @@ public class LinkController {
 
     @GetMapping("/{id}")
     public Link getLinkDetails(@PathVariable("id") String id) {
-        return linkService.findById(id);
+        Link link = linkService.findById(id);
+        return linkService.save(link);
     }
 
     @PatchMapping("/{id}")

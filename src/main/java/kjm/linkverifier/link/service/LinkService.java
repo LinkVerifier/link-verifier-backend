@@ -4,11 +4,13 @@ import kjm.linkverifier.link.exceptions.LinkNotFoundException;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.model.Link;
 import kjm.linkverifier.link.model.OpinionEnum;
+import kjm.linkverifier.link.repository.CommentRepository;
 import kjm.linkverifier.link.repository.LinkRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,6 +19,9 @@ public class LinkService {
 
     @Autowired
     private LinkRepository linkRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     public Link findById(String id) {
         return linkRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: Link is not found"));
@@ -50,8 +55,27 @@ public class LinkService {
         return url;
     }
 
+    public void deleteCommentsAndSetRatingByComments(List<Comment> comments) {
+        for (int i =0; i < comments.size(); i++) {
+            Link link = linkRepository.findLinkByCommentsLike(comments.get(i))
+                    .orElseThrow(() -> new LinkNotFoundException("Link is not found"));
+            if(link.getComments().size()==1) {
+                link.setComments(new ArrayList<>());
+            } else {
+                link.getComments().remove(comments.get(i));
+            }
+            link.setRating(calculateRatings(link.getComments()));
+            save(link);
+        }
+
+        commentRepository.deleteAll(comments);
+
+    }
+
     public int calculateRatings(List<Comment> comments) {
         int countNeutral = 0;
+        log.info("comment size {} ",comments.size());
+        log.info("comments: {}", comments);
         if(comments.size() == 0) {
             return 0;
         }
@@ -78,10 +102,6 @@ public class LinkService {
                 .orElseThrow(LinkNotFoundException::new);
     }
 
-    public List<Link> findAllByOrderByCreationDateDesc() {
-        return linkRepository.findAllByOrderByCreationDateDesc();
-    }
-
     public List<Link> findAllByOrderByCreationDateDesc(int from, int to) {
         if(linkRepository.findAllByOrderByCreationDateDesc().size()<to) {
             return linkRepository.findAllByOrderByCreationDateDesc();
@@ -93,19 +113,11 @@ public class LinkService {
         return linkRepository.findAll();
     }
 
-    public List<Link> findAllByOrderByRatingAsc() {
-        return linkRepository.findAllByOrderByRatingAsc();
-    }
-
     public List<Link> findAllByOrderByRatingAsc(int from, int to) {
         if(linkRepository.findAllByOrderByRatingAsc().size()<to) {
             return linkRepository.findAllByOrderByRatingAsc();
         }
         return linkRepository.findAllByOrderByRatingAsc().subList(from, to);
-    }
-
-    public List<Link> findAllByOrderByViewsDesc() {
-        return linkRepository.findAllByOrderByViewsDesc();
     }
 
     public List<Link> findAllByOrderByViewsDesc(int from, int to) {

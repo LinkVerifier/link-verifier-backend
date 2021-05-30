@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,7 +73,12 @@ public class CommentController {
         User user = CurrentUser.getCurrentUser(httpServletRequest);
         Comment comment = commentService.findById(id);
         Link link = linkService.findLinkByCommentsLike(comment);
-        link.getComments().remove(comment);
+        if(link.getComments().size()==1) {
+            link.setComments(new ArrayList<>());
+        } else {
+            link.getComments().remove(comment);
+
+        }
         link.setRating(linkService.calculateRatings(link.getComments()));
         linkService.save(link);
 
@@ -128,7 +134,6 @@ public class CommentController {
         linkService.save(link);
         userService.save(user);
         link.setComments(commentService.findAllByLinkIdOrderByCreationDateDesc(id));
-        log.info("comments {}", link.getComments());
         return ResponseEntity.ok(linkService.save(link));
     }
 }

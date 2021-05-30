@@ -9,6 +9,7 @@ import kjm.linkverifier.auth.web.response.ExceptionResponse;
 import kjm.linkverifier.auth.web.response.InformationResponse;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.service.CommentService;
+import kjm.linkverifier.link.service.LinkService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +32,16 @@ public class UserController {
 
     private final CommentService commentService;
 
-    public UserController(PasswordEncoder passwordEncoder, UserService userService, CommentService commentService) {
+    private final LinkService linkService;
+
+    public UserController(PasswordEncoder passwordEncoder,
+                          UserService userService,
+                          CommentService commentService,
+                          LinkService linkService) {
         this.passwordEncoder = passwordEncoder;
         this.userService = userService;
         this.commentService = commentService;
+        this.linkService = linkService;
     }
 
     @GetMapping("/{id}")
@@ -47,7 +54,8 @@ public class UserController {
     public void delete(@PathVariable("id") String id) {
         User user = userService.findById(id);
         userService.deleteUser(userService.findById(id));
-        commentService.deleteSome(user.getComments());
+        linkService.deleteCommentsAndSetRatingByComments(user.getComments());
+//        commentService.deleteSome(user.getComments());
     }
 
     @PutMapping("/change_username")
