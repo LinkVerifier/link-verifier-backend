@@ -39,8 +39,6 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> findUser(@PathVariable("id") String id) {
-        log.info("IDD {}", id );
-        log.info("ROLE: {} ",userService.findById(id).getRoles());
         return ResponseEntity.ok().body(userService.findById(id));
     }
 

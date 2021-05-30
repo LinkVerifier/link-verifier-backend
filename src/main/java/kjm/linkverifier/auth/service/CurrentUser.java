@@ -5,13 +5,11 @@ import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.UserRepository;
 import kjm.linkverifier.auth.security.jwtToken.AuthTokenFilter;
 import kjm.linkverifier.auth.security.jwtToken.JwtUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Component
-@Slf4j
 public class CurrentUser {
 
     private static UserRepository userRepository;

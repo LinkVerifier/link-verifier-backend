@@ -7,7 +7,6 @@ import kjm.linkverifier.auth.models.RoleEnum;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.RoleRepository;
 import kjm.linkverifier.auth.repository.UserRepository;
-import kjm.linkverifier.files.repository.FileRepository;
 import kjm.linkverifier.files.service.FileService;
 import kjm.linkverifier.link.model.Comment;
 import kjm.linkverifier.link.service.CommentService;

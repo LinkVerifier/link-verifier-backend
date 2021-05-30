@@ -61,7 +61,6 @@ public class FacebookService {
 
     public User convertUserToFacebookUser(FacebookUser facebookUser, Long creationDate) {
         String url = facebookUser.getPicture().getData().getUrl();
-        log.info("url {}", url);
         String extension = url.substring(url.lastIndexOf("."));
         byte[] fileContent = new byte[0];
         try {

@@ -95,7 +95,6 @@ public class SignInController {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         String jwt = jwtUtils.generateJwtToken(authentication);
-        log.info("Authenticate: " +((UserDetails)principal).getUsername());
         log.info("succesfuly logged in : {}", ((UserDetailsImpl)principal).getEmail());
         return ResponseEntity.ok(new TokenResponse(jwt));
     }
