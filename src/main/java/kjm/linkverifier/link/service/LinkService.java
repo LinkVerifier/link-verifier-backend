@@ -17,11 +17,14 @@ import java.util.List;
 @Slf4j
 public class LinkService {
 
-    @Autowired
-    private LinkRepository linkRepository;
+    private final LinkRepository linkRepository;
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
+
+    public LinkService(LinkRepository linkRepository, CommentRepository commentRepository) {
+        this.linkRepository = linkRepository;
+        this.commentRepository = commentRepository;
+    }
 
     public Link findById(String id) {
         return linkRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: Link is not found"));

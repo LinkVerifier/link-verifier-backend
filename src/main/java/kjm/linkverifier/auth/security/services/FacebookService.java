@@ -7,7 +7,7 @@ import kjm.linkverifier.auth.models.RoleEnum;
 import kjm.linkverifier.auth.models.User;
 import kjm.linkverifier.auth.repository.RoleRepository;
 import kjm.linkverifier.auth.repository.UserRepository;
-import kjm.linkverifier.auth.models.facebook.FacebookUser;
+import kjm.linkverifier.auth.security.facebook.FacebookUser;
 import kjm.linkverifier.files.model.File;
 import kjm.linkverifier.files.service.FileService;
 import lombok.extern.slf4j.Slf4j;

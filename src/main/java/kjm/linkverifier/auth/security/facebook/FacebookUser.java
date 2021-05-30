@@ -1,4 +1,4 @@
-package kjm.linkverifier.auth.models.facebook;
+package kjm.linkverifier.auth.security.facebook;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

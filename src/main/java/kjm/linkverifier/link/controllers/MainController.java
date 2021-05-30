@@ -19,14 +19,17 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class MainController {
 
-    @Autowired
-    private LinkRepository linkRepository;
+    private final LinkRepository linkRepository;
 
-    @Autowired
-    private CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    public MainController(LinkRepository linkRepository, CommentRepository commentRepository, UserRepository userRepository) {
+        this.linkRepository = linkRepository;
+        this.commentRepository = commentRepository;
+        this.userRepository = userRepository;
+    }
 
     @GetMapping
     public ResponseEntity<?> showMainPage() {

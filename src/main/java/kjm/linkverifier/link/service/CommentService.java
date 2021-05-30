@@ -10,7 +10,6 @@ import kjm.linkverifier.link.repository.CommentRepository;
 import kjm.linkverifier.link.repository.OpinionRepository;
 import kjm.linkverifier.link.requests.CommentRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -41,10 +40,6 @@ public class CommentService {
 
     public Comment save(Comment comment) {
         return commentRepository.save(comment);
-    }
-
-    public void delete(Comment comment) {
-        commentRepository.delete(comment);
     }
 
     public void deleteSome(List<Comment> comments) {

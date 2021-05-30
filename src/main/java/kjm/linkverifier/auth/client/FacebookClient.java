@@ -1,6 +1,6 @@
 package kjm.linkverifier.auth.client;
 
-import kjm.linkverifier.auth.models.facebook.FacebookUser;
+import kjm.linkverifier.auth.security.facebook.FacebookUser;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
