@@ -77,8 +77,6 @@ public class LinkService {
 
     public int calculateRatings(List<Comment> comments) {
         int countNeutral = 0;
-        log.info("comment size {} ",comments.size());
-        log.info("comments: {}", comments);
         if(comments.size() == 0) {
             return 0;
         }
