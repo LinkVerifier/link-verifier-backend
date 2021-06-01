@@ -121,6 +121,13 @@ public class LinkService {
         return linkRepository.findAllByOrderByRatingAsc().subList(from, to);
     }
 
+    public List<Link> findAllByOrderByRatingDesc(int from, int to) {
+        if(linkRepository.findAllByOrderByRatingDesc().size()<to) {
+            return linkRepository.findAllByOrderByRatingDesc();
+        }
+        return linkRepository.findAllByOrderByRatingDesc().subList(from, to);
+    }
+
     public List<Link> findAllByOrderByViewsDesc(int from, int to) {
         if(linkRepository.findAllByOrderByViewsDesc().size() < to) {
             return linkRepository.findAllByOrderByViewsDesc();

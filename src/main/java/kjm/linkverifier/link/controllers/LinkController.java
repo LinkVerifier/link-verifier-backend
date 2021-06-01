@@ -66,7 +66,7 @@ public class LinkController {
                 case "most_visited":
                     return new ResponseEntity<>(linkService.findAllByOrderByViewsDesc(0, toInt), HttpStatus.OK);
                 case "most_dangerous":
-                    return new ResponseEntity<>(linkService.findAllByOrderByRatingAsc(0, toInt), HttpStatus.OK);
+                    return new ResponseEntity<>(linkService.findAllByOrderByRatingDesc(0, toInt), HttpStatus.OK);
                 default:
                     return new ResponseEntity<>(linkService.findAll(), HttpStatus.OK);
             }

@@ -16,6 +16,8 @@ public interface LinkRepository extends MongoRepository<Link, String> {
 
     List<Link> findAllByOrderByRatingAsc();
 
+    List<Link> findAllByOrderByRatingDesc();
+
     List<Link> findAllByOrderByViewsDesc();
 
     Optional<Link> findLinkByCommentsLike(Comment comment);
