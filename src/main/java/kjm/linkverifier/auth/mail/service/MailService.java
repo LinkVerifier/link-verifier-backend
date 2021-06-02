@@ -25,7 +25,7 @@ public class MailService {
     }
 
     private void createRegistrationEmail(String token, User user) throws MessagingException {
-        String url = "http://localhost:8081/auth/signup/confirm?userId=" +
+        String url = "https://localhost:8081/auth/signup/confirm?userId=" +
                 user.getId() + "&token=" + token;
         createEmail(url, user,"LinkVerifier - Activation link \n");
     }
