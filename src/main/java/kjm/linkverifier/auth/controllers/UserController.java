@@ -55,7 +55,6 @@ public class UserController {
         User user = userService.findById(id);
         userService.deleteUser(userService.findById(id));
         linkService.deleteCommentsAndSetRatingByComments(user.getComments());
-//        commentService.deleteSome(user.getComments());
     }
 
     @PutMapping("/change_username")

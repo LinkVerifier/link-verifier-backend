@@ -23,15 +23,4 @@ public class LinkverifierApplication {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void insertToDatabase() {
-//        opinionRepository.save(new Opinion(OpinionEnum.FRAUD));
-//        opinionRepository.save(new Opinion(OpinionEnum.INDECENT_CONTENT));
-//        opinionRepository.save(new Opinion(OpinionEnum.FAKE_NEWS));
-//        opinionRepository.save(new Opinion(OpinionEnum.RELIABLE));
-//        opinionRepository.save(new Opinion(OpinionEnum.SAFE));
-//        opinionRepository.save(new Opinion(OpinionEnum.VIRUS));
-//        opinionRepository.save(new Opinion(OpinionEnum.NEUTRAL));
-    }
 }

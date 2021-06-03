@@ -59,18 +59,18 @@ public class SignInController {
         if(!userService.existsByEmail(loginRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new InformationResponse("Error: Wrong email"));
+                    .body(new InformationResponse("Nieprawidłowy email"));
         }
         User user = userService.findByEmail(loginRequest.getEmail());
         if(!user.isConfirmed()) {
             return ResponseEntity
                     .badRequest()
-                    .body(new InformationResponse("Error: Account is not confirmed"));
+                    .body(new InformationResponse("Konto nie jest potwierdzone"));
         }
         if(!user.getEmail().equals(loginRequest.getEmail()) || !passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new InformationResponse("Error: Password or email is wrong"));
+                    .body(new InformationResponse("Hasło lub email nie są prawidłowe"));
         }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
